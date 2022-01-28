@@ -1,0 +1,40 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Milestone Sprint
+        # You may pin to the exact commit or the version.
+        # uses: jonahgoldwastaken/milestone-sprint@a429f6462d6ed0344bfab36eb778faa9f08c3ee7
+        uses: jonahgoldwastaken/milestone-sprint@v1.0.5
+        with:
+          # The name of the project to update the tasks on.
+          project_name: Scrum Board - Milestone 1
+#           # The column to move the tasks in the nearest milestone from.
+#           backlog_column: # optional, default is Backlog
+#           # The column to move the tasks in the nearest milestone to.
+#           todo_column: # optional, default is To do
+          # The token provided by GitHub under secrets.GITHUB_TOKEN.
+          token: ${{ secrets.GITHUB_TOKEN }}
