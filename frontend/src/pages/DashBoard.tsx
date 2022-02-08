@@ -1,8 +1,8 @@
 import { Container } from "@mui/material";
 import React from "react";
 
-function DashBoard() {
+function Dashboard() {
   return <Container></Container>;
 }
 
-export default DashBoard;
+export default Dashboard;

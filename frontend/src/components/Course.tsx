@@ -35,7 +35,12 @@ function Course() {
     <Container>
       <Box my={5}>
         <Typography variant="h1">CSC108H5</Typography>
-        <Box sx={{ backgroundColor: "highlight.main" }} p={2} mx={3} my={2}>
+        <Box
+          sx={{ backgroundColor: "highlight.main", borderRadius: 2 }}
+          p={2}
+          mx={3}
+          my={2}
+        >
           <TableContainer>
             <Table>
               <TableHead>

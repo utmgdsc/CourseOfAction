@@ -38,6 +38,22 @@ const theme = createTheme({
       fontWeight: 900,
     },
   },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: "#484848",
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        colorPrimary: {
+          backgroundColor: "#484848",
+        },
+      },
+    },
+  },
 });
 
 export default theme;

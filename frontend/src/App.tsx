@@ -2,27 +2,22 @@ import React from "react";
 import "./App.css";
 import Course from "./components/Course";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Button from "@mui/material/Button";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import NavDrawer from "./components/NavDrawer";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
-    <Box component="main">
-      <BrowserRouter>
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <div>
-                <Course />
-                <Button variant="contained">
-                  <Typography color="white">Hello World </Typography>
-                </Button>
-              </div>
-            }
-          />
-        </Routes>
-      </BrowserRouter>
+    <Box>
+      <Navbar />
+      <NavDrawer />
+      <Box component="main" ml="275px" mt="75px">
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Course />} />
+          </Routes>
+        </BrowserRouter>
+      </Box>
     </Box>
   );
 }

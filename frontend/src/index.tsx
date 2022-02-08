@@ -6,13 +6,11 @@ import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme";
 import { CssBaseline } from "@mui/material";
-import LeftBar from "./components/LeftBar";
 
 ReactDOM.render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <CssBaseline>
-        <LeftBar />
         <App />
       </CssBaseline>
     </ThemeProvider>
