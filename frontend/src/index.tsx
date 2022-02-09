@@ -4,16 +4,21 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "@mui/material/styles";
+import store from "./store/index";
+import { Provider } from "react-redux";
+
 import theme from "./theme";
 import { CssBaseline } from "@mui/material";
 
 ReactDOM.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline>
-        <App />
-      </CssBaseline>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline>
+          <App />
+        </CssBaseline>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

@@ -25,9 +25,6 @@ const theme = createTheme({
     navBackgorund: {
       main: "#484848",
     },
-    green: {
-      main: "#118A7E",
-    },
     highlight: {
       main: "#2E2E33",
     },

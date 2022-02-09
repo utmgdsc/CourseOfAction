@@ -9,9 +9,12 @@ import {
   Box,
   Typography,
 } from "@mui/material";
-import { fontSize } from "@mui/system";
+import { useSelector } from "react-redux";
+import { RootState } from "../store/index";
 
 function NavDrawer() {
+  const courses = useSelector((state: RootState) => state.courses);
+
   return (
     <Drawer
       variant="permanent"
@@ -28,15 +31,15 @@ function NavDrawer() {
       <Box sx={{ overflow: "auto" }}>
         <Divider />
         <List>
-          {["Dashboard", "CSC108H5", "CSC148H5", "Upcoming"].map(
-            (text, index) => (
+          {["Dashboard", "Upcoming"]
+            .concat(Object.keys(courses.currentCourses))
+            .map((text, index) => (
               <ListItem button sx={{ borderRadius: 2 }} key={text}>
                 <ListItemText>
                   <Typography sx={{ fontSize: "20px" }}>{text}</Typography>
                 </ListItemText>
               </ListItem>
-            )
-          )}
+            ))}
         </List>
       </Box>
     </Drawer>
