@@ -34,6 +34,10 @@ const theme = createTheme({
       fontSize: 72,
       fontWeight: 900,
     },
+    h2: {
+      fontSize: 32,
+      fontWeight: 600,
+    },
   },
   components: {
     MuiDrawer: {

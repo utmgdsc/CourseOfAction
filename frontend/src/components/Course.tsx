@@ -9,32 +9,70 @@ import {
   TableCell,
   TableBody,
   TextField,
+  Stack,
 } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
 
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
+interface propTypes {
+  courseInfo: {
+    assessments: object;
+    courseName: string;
+    credit: number;
+    expectedGrade: number;
+    familiarity: number;
+    offering: string;
+    currGrade: number;
+  };
 }
 
-const course = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
-
-function Course() {
+function Course({ courseInfo }: propTypes) {
   return (
     <Container>
       <Box my={5}>
         <Typography variant="h1">CSC108H5</Typography>
+        <Stack direction="row" justifyContent="space-between" mt="20px" mx={10}>
+          <Stack>
+            <Typography variant="h2" color="green.main">
+              Current Mark
+            </Typography>
+            <Typography
+              variant="h2"
+              fontSize="h1.fontSize"
+              color="green.main"
+              align="center"
+            >
+              {courseInfo.currGrade}
+            </Typography>
+          </Stack>
+          <Stack>
+            <Typography variant="h2" color="primary.main">
+              Expected Mark
+            </Typography>
+            <Typography
+              variant="h2"
+              fontSize="h1.fontSize"
+              color="primary.main"
+              align="center"
+            >
+              {courseInfo.expectedGrade}
+            </Typography>
+          </Stack>
+          <Stack>
+            <Typography variant="h2" color="primary.main">
+              Current Mark
+            </Typography>
+            <Typography
+              variant="h2"
+              fontSize="h1.fontSize"
+              color="primary.main"
+              align="center"
+            >
+              {courseInfo.currGrade}
+            </Typography>
+          </Stack>
+        </Stack>
         <Box
           sx={{ backgroundColor: "highlight.main", borderRadius: 2 }}
           p={2}
@@ -60,19 +98,22 @@ function Course() {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {course.map((c) => (
+                {Object.entries(courseInfo.assessments).map(([key, c], i) => (
                   <TableRow>
+                    {console.log(key, c)}
                     <TableCell>
-                      <TextField value={c.name} />
+                      <TextField value={key} />
                     </TableCell>
                     <TableCell>
-                      <TextField value={c.carbs} />
+                      <TextField value={c.weight} />
                     </TableCell>
                     <TableCell>
-                      <TextField value={c.fat} />
+                      <TextField value={c.mark} />
                     </TableCell>
                     <TableCell>
-                      <TextField value={c.calories} />
+                      <IconButton aria-label="delete">
+                        <DeleteIcon />
+                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))}

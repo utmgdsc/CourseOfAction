@@ -18,6 +18,7 @@ const initialState = {
       expectedGrade: 90,
       familiarity: 5,
       offering: "W2022",
+      currGrade: 80,
     },
   },
   value: 0,
