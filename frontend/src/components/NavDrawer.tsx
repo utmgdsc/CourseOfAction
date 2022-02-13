@@ -32,9 +32,9 @@ function NavDrawer() {
         <Divider />
         <List>
           {["Dashboard", "Upcoming"]
-            .concat(Object.keys(courses.currentCourses))
+            .concat(courses.currentCourses.map((e) => e.code))
             .map((text, index) => (
-              <ListItem button sx={{ borderRadius: 2 }} key={text}>
+              <ListItem button sx={{ borderRadius: 2 }} key={index}>
                 <ListItemText>
                   <Typography sx={{ fontSize: "20px" }}>{text}</Typography>
                 </ListItemText>

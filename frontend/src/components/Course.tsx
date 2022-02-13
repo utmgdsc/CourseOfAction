@@ -14,24 +14,19 @@ import {
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { CourseInterface } from "./../store/courses";
 
 interface propTypes {
-  courseInfo: {
-    assessments: object;
-    courseName: string;
-    credit: number;
-    expectedGrade: number;
-    familiarity: number;
-    offering: string;
-    currGrade: number;
-  };
+  courseInfo: CourseInterface;
 }
 
 function Course({ courseInfo }: propTypes) {
+  const dispatch = useDispatch();
   return (
     <Container>
       <Box my={5}>
-        <Typography variant="h1">CSC108H5</Typography>
+        <Typography variant="h1">{courseInfo.code}</Typography>
         <Stack direction="row" justifyContent="space-between" mt="20px" mx={10}>
           <Stack>
             <Typography variant="h2" color="green.main">
@@ -98,11 +93,10 @@ function Course({ courseInfo }: propTypes) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {Object.entries(courseInfo.assessments).map(([key, c], i) => (
+                {courseInfo.assessments.map((c) => (
                   <TableRow>
-                    {console.log(key, c)}
                     <TableCell>
-                      <TextField value={key} />
+                      <TextField value={c.name} />
                     </TableCell>
                     <TableCell>
                       <TextField value={c.weight} />

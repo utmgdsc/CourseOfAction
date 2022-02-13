@@ -9,8 +9,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "./store/index";
 
 function App() {
-  const crc100 = useSelector(
-    (store: RootState) => store.courses.currentCourses.CRC100
+  const courses = useSelector(
+    (store: RootState) => store.courses.currentCourses
   );
   return (
     <Box>
@@ -19,7 +19,7 @@ function App() {
       <Box component="main" ml="275px" mt="75px">
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Course courseInfo={crc100} />} />
+            <Route path="/" element={<Course courseInfo={courses[0]} />} />
           </Routes>
         </BrowserRouter>
       </Box>
