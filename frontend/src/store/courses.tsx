@@ -57,8 +57,36 @@ const coursesSlice = createSlice({
   reducers: {
     addCourse(state, action) {},
     deleteCourse(state, action) {},
+    addAssessment(state, { payload }) {
+      const { courseCode, assessment } = payload;
+      const courseIndex = state.currentCourses.findIndex(
+        (course) => course.code === courseCode
+      );
+      if (courseIndex === -1) {
+        // Error handling
+        return;
+      }
+      state.currentCourses[courseIndex].assessments.push(assessment);
+    },
+    deleteAssessment(state, { payload }) {
+      const { courseCode, assessmentName } = payload;
+
+      const courseIndex = state.currentCourses.findIndex(
+        (course) => course.code === courseCode
+      );
+
+      if (courseIndex === -1) {
+        // Error handling
+        return;
+      }
+      const indexToDelete = state.currentCourses[
+        courseIndex
+      ].assessments.findIndex((element) => element.name === assessmentName);
+      state.currentCourses[courseIndex].assessments.splice(indexToDelete, 1);
+    },
   },
 });
 
-// export const { addCourse } = coursesSlice.actions;
+export const { addCourse, deleteAssessment, deleteCourse, addAssessment } =
+  coursesSlice.actions;
 export default coursesSlice.reducer;

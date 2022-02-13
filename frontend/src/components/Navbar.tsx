@@ -1,5 +1,5 @@
 import React from "react";
-import { AppBar, Typography, Toolbar } from "@mui/material";
+import { AppBar, Typography, Toolbar, Avatar } from "@mui/material";
 
 function Navbar() {
   return (
@@ -10,6 +10,7 @@ function Navbar() {
       }}
     >
       <Toolbar>
+        <Avatar sx={{ mr: "5px" }} src="/grade.png" />
         <Typography
           fontWeight="bold"
           fontSize="30px"
