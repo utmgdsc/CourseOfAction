@@ -31,7 +31,7 @@ const initialState: Courses = {
     {
       assessments: [
         {
-          name: "assignment",
+          name: "Assignment 1",
           customReminder: "2022/01/16", // Need to be date, error in database
           deadline: "2022/01/22", // Need to be date, error in database
           isCompleted: true, // Need to be boolean, error in database
@@ -84,9 +84,29 @@ const coursesSlice = createSlice({
       ].assessments.findIndex((element) => element.name === assessmentName);
       state.currentCourses[courseIndex].assessments.splice(indexToDelete, 1);
     },
+    updateAssessment(state, { payload }) {
+      const { courseCode, assessment } = payload;
+      const courseIndex = state.currentCourses.findIndex(
+        (course) => course.code === courseCode
+      );
+
+      if (courseIndex === -1) {
+        // Error handling
+        return;
+      }
+      const indexToUpdate = state.currentCourses[
+        courseIndex
+      ].assessments.findIndex((element) => element.name === assessment.name);
+      state.currentCourses[courseIndex].assessments[indexToUpdate] = assessment;
+    },
   },
 });
 
-export const { addCourse, deleteAssessment, deleteCourse, addAssessment } =
-  coursesSlice.actions;
+export const {
+  addCourse,
+  deleteAssessment,
+  deleteCourse,
+  addAssessment,
+  updateAssessment,
+} = coursesSlice.actions;
 export default coursesSlice.reducer;

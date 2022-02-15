@@ -19,9 +19,15 @@ import {
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
+import Edit from "@mui/icons-material/Edit";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { CourseInterface } from "./../store/courses";
+import {
+  addAssessment,
+  Assessment,
+  CourseInterface,
+  updateAssessment,
+} from "./../store/courses";
 import { deleteAssessment } from "../store/courses";
 
 interface propTypes {
@@ -29,8 +35,19 @@ interface propTypes {
 }
 
 function Course({ courseInfo }: propTypes) {
-  const [open, setOpen] = useState(false);
+  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+  const [addAsssessmentInfo, setAddAsssessmentInfo] = useState({
+    name: "",
+    customReminder: "", // Need to be date, error in database
+    deadline: "", // Need to be date, error in database
+    isCompleted: false, // Need to be boolean, error in database
+    mark: 0,
+    reminder: "", // Need to be date, error in database
+    weight: 0,
+  });
   const dispatch = useDispatch();
+
   return (
     <Container>
       <Box my={5}>
@@ -87,7 +104,7 @@ function Course({ courseInfo }: propTypes) {
             color="primary"
             size="medium"
             sx={{ color: "white" }}
-            onClick={() => setOpen(true)}
+            onClick={() => setIsAddOpen(true)}
           >
             Add Assessment
           </Button>
@@ -112,6 +129,12 @@ function Course({ courseInfo }: propTypes) {
                     Marks
                   </TableCell>
                   <TableCell sx={{ fontWeight: 900, fontSize: "18px" }}>
+                    Deadline
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 900, fontSize: "18px" }}>
+                    Reminder
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: 900, fontSize: "18px" }}>
                     Actions
                   </TableCell>
                 </TableRow>
@@ -119,30 +142,69 @@ function Course({ courseInfo }: propTypes) {
               <TableBody>
                 {courseInfo.assessments.map((c) => (
                   <TableRow>
+                    <TableCell>{c.name}</TableCell>
+                    <TableCell>{c.weight}</TableCell>
                     <TableCell>
-                      <TextField size="small" value={c.name} />
-                    </TableCell>
-                    <TableCell>
-                      <TextField size="small" value={c.weight} />
-                    </TableCell>
-                    <TableCell>
-                      <TextField size="small" value={c.mark} />
-                    </TableCell>
-                    <TableCell>
-                      <IconButton
-                        aria-label="delete"
-                        onClick={() =>
+                      <TextField
+                        type="number"
+                        size="small"
+                        value={c.mark}
+                        onChange={(e) =>
                           dispatch(
-                            deleteAssessment({
+                            updateAssessment({
                               courseCode: courseInfo.code,
-                              assessmentName: c.name,
+                              assessment: {
+                                ...c,
+                                mark: parseFloat(e.target.value),
+                              },
                             })
                           )
                         }
+                      />
+                    </TableCell>
+                    <TableCell>{c.deadline}</TableCell>
+                    <TableCell>{c.customReminder}</TableCell>
+                    <TableCell>
+                      <IconButton aria-label="edit">
+                        <Edit />
+                      </IconButton>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => setIsDeleteOpen(true)}
                       >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
+                    {/* Delete Assessment */}
+                    <Dialog
+                      open={isDeleteOpen}
+                      onClose={() => setIsDeleteOpen(false)}
+                    >
+                      <DialogTitle>Delete Assessment</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText color="white">
+                          Are you sure you want to delete this assessment ?
+                        </DialogContentText>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button onClick={() => setIsDeleteOpen(false)}>
+                          No
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            dispatch(
+                              deleteAssessment({
+                                courseCode: courseInfo.code,
+                                assessmentName: c.name,
+                              })
+                            );
+                            setIsDeleteOpen(false);
+                          }}
+                        >
+                          Yes
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </TableRow>
                 ))}
               </TableBody>
@@ -151,7 +213,8 @@ function Course({ courseInfo }: propTypes) {
         </Box>
       </Box>
 
-      <Dialog open={open} onClose={() => setOpen(false)}>
+      {/* Add Assessment Dialog */}
+      <Dialog open={isAddOpen} onClose={() => setIsAddOpen(false)}>
         <DialogTitle>Add Assessment</DialogTitle>
         <DialogContent>
           <DialogContentText color="white">
@@ -160,43 +223,77 @@ function Course({ courseInfo }: propTypes) {
           <TextField
             autoFocus
             margin="dense"
-            id="name"
-            label="Assignment Name"
+            label="Assignment name"
             type="text"
             fullWidth
             variant="standard"
+            onChange={(e) => {
+              setAddAsssessmentInfo((addAssessment) => ({
+                ...addAssessment,
+                name: e.target.value,
+              }));
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
             label="Weightage"
             type="number"
             fullWidth
             variant="standard"
+            onChange={(e) => {
+              setAddAsssessmentInfo((addAssessment) => ({
+                ...addAssessment,
+                weight: parseFloat(e.target.value),
+              }));
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
             label="Deadline date"
             type="date"
             fullWidth
             variant="standard"
+            InputLabelProps={{ shrink: true }}
+            onChange={(e) => {
+              setAddAsssessmentInfo((addAssessment) => ({
+                ...addAssessment,
+                deadline: e.target.value,
+              }));
+            }}
           />
           <TextField
             autoFocus
             margin="dense"
-            id="name"
             label="Notification date"
             type="date"
             fullWidth
             variant="standard"
+            InputLabelProps={{ shrink: true }}
+            onChange={(e) => {
+              setAddAsssessmentInfo((addAssessment) => ({
+                ...addAssessment,
+                customReminder: e.target.value,
+              }));
+            }}
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpen(false)}>Cancel</Button>
-          <Button onClick={() => setOpen(false)}>Add Course</Button>
+          <Button onClick={() => setIsAddOpen(false)}>Cancel</Button>
+          <Button
+            onClick={() => {
+              dispatch(
+                addAssessment({
+                  courseCode: courseInfo.code,
+                  assessment: addAsssessmentInfo,
+                })
+              );
+              setIsAddOpen(false);
+            }}
+          >
+            Add Assessment
+          </Button>
         </DialogActions>
       </Dialog>
     </Container>
