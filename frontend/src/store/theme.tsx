@@ -15,8 +15,13 @@ const themeSlice = createSlice({
     toggleTheme(state) {
       state.darkMode = state.darkMode === true ? false : true;
     },
+    updateThemeMode(state, { payload }) {
+      const { darkMode } = payload;
+      console.log(state.darkMode, darkMode);
+      state.darkMode = darkMode;
+    },
   },
 });
 
-export const { toggleTheme } = themeSlice.actions;
+export const { toggleTheme, updateThemeMode } = themeSlice.actions;
 export default themeSlice.reducer;

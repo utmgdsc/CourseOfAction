@@ -1,15 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./App.css";
 import Course from "./components/Course";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import NavDrawer from "./components/NavDrawer";
 import Navbar from "./components/Navbar";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/index";
 import { ThemeProvider } from "@mui/material/styles";
 import { dark_theme, light_theme } from "./theme";
 import { CssBaseline } from "@mui/material";
+import { useCookies, CookiesProvider } from "react-cookie";
+import { updateThemeMode } from "./store/theme";
 
 function App() {
   const courses = useSelector(
@@ -18,20 +20,37 @@ function App() {
 
   const themeMode = useSelector((store: RootState) => store.theme.darkMode);
 
+  const dispatch = useDispatch();
+
+  const [cookies, setCookies] = useCookies(["darkMode"]);
+
+  useEffect(() => {
+    if (!cookies["darkMode"]) {
+      console.log(cookies["darkMode"], "HERE");
+      setCookies("darkMode", true);
+    } else
+      dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
+  }, []);
+
   return (
     <ThemeProvider theme={themeMode ? dark_theme : light_theme}>
       <CssBaseline>
-        <Box>
-          <Navbar />
-          <NavDrawer />
-          <Box component="main" mr="275px" mt="75px">
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Course courseInfo={courses[0]} />} />
-              </Routes>
-            </BrowserRouter>
+        <CookiesProvider>
+          <Box>
+            <Navbar updateThemeCookie={setCookies} />
+            <NavDrawer />
+            <Box component="main" mr="275px" mt="75px">
+              <BrowserRouter>
+                <Routes>
+                  <Route
+                    path="/"
+                    element={<Course courseInfo={courses[0]} />}
+                  />
+                </Routes>
+              </BrowserRouter>
+            </Box>
           </Box>
-        </Box>
+        </CookiesProvider>
       </CssBaseline>
     </ThemeProvider>
   );

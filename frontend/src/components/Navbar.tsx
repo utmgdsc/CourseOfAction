@@ -67,7 +67,11 @@ const IOSSwitch = styled((props: SwitchProps) => (
   },
 }));
 
-function Navbar() {
+interface propTypes {
+  updateThemeCookie: Function;
+}
+
+function Navbar({ updateThemeCookie }: propTypes) {
   const dispatch = useDispatch();
   const darkMode = useSelector((store: RootState) => store.theme.darkMode);
   return (
@@ -96,7 +100,10 @@ function Navbar() {
             <IOSSwitch
               sx={{ m: 1 }}
               checked={darkMode.valueOf()}
-              onChange={() => dispatch(toggleTheme())}
+              onChange={() => {
+                updateThemeCookie("darkMode", !darkMode.valueOf());
+                dispatch(toggleTheme());
+              }}
             />
             <DarkModeIcon fontSize="large" />
           </Box>
