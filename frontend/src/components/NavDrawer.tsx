@@ -26,6 +26,7 @@ function NavDrawer() {
           backgroundColor: "#484848",
         },
       }}
+      anchor="right"
     >
       <Toolbar />
       <Box sx={{ overflow: "auto" }}>

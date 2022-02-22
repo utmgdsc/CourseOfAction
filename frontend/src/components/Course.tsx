@@ -24,7 +24,6 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import {
   addAssessment,
-  Assessment,
   CourseInterface,
   updateAssessment,
 } from "./../store/courses";
@@ -63,7 +62,7 @@ function Course({ courseInfo }: propTypes) {
               color="green.main"
               align="center"
             >
-              {courseInfo.currGrade}
+              {courseInfo.currMark}
             </Typography>
           </Stack>
           <Stack>
@@ -80,13 +79,13 @@ function Course({ courseInfo }: propTypes) {
             </Typography>
           </Stack>
           <Stack>
-            <Typography variant="h2" color="primary.main">
-              Current Mark
+            <Typography variant="h2" color="orange.main">
+              Current Grade
             </Typography>
             <Typography
               variant="h2"
               fontSize="h1.fontSize"
-              color="primary.main"
+              color="orange.main"
               align="center"
             >
               {courseInfo.currGrade}

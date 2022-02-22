@@ -1,6 +1,6 @@
 import { createTheme } from "@mui/material/styles";
 
-const theme = createTheme({
+const dark_theme = createTheme({
   palette: {
     mode: "dark",
     primary: {
@@ -11,6 +11,9 @@ const theme = createTheme({
     },
     green: {
       main: "#118A7E",
+    },
+    orange: {
+      main: "#e63900",
     },
     background: {
       paper: "#1B1B22",
@@ -57,4 +60,65 @@ const theme = createTheme({
   },
 });
 
-export default theme;
+const light_theme = createTheme({
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#00A1DF",
+    },
+    secondary: {
+      main: "#0256C4",
+    },
+    green: {
+      main: "#118A7E",
+    },
+    orange: {
+      main: "#e63900",
+      secondary: "#00A1DF",
+    },
+    background: {
+      paper: "#FFFFF7",
+    },
+    popup: {
+      main: "#D3D3D3",
+    },
+    text: {
+      primary: "#000",
+      secondary: "#00A1DF",
+    },
+    navBackgorund: {
+      main: "#D3D3D3",
+    },
+    highlight: {
+      main: "#D3D3D3",
+    },
+  },
+  typography: {
+    h1: {
+      fontSize: 72,
+      fontWeight: 900,
+    },
+    h2: {
+      fontSize: 32,
+      fontWeight: 600,
+    },
+  },
+  components: {
+    MuiDrawer: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: "#D3D3D3",
+        },
+      },
+    },
+    MuiAppBar: {
+      styleOverrides: {
+        colorPrimary: {
+          backgroundColor: "#D3D3D3",
+        },
+      },
+    },
+  },
+});
+
+export { dark_theme, light_theme };

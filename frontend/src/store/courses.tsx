@@ -1,5 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { StringLiteralLike } from "typescript";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface Assessment {
   customReminder: string;
@@ -18,6 +17,7 @@ export interface CourseInterface {
   expectedGrade: number;
   familiarity: number;
   offering: string;
+  currMark: number;
   currGrade: number;
   assessments: Assessment[];
 }
@@ -45,7 +45,8 @@ const initialState: Courses = {
       expectedGrade: 90,
       familiarity: 5,
       offering: "W2022",
-      currGrade: 80,
+      currMark: 80,
+      currGrade: 3.5,
       code: "CSC108H5",
     },
   ],
