@@ -17,7 +17,6 @@ const themeSlice = createSlice({
     },
     updateThemeMode(state, { payload }) {
       const { darkMode } = payload;
-      console.log(state.darkMode, darkMode);
       state.darkMode = darkMode;
     },
   },
