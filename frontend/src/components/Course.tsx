@@ -26,7 +26,7 @@ import {
   addAssessment,
   CourseInterface,
   updateAssessment,
-} from "./../store/courses";
+} from "../store/courses";
 import { deleteAssessment } from "../store/courses";
 
 interface propTypes {
@@ -46,6 +46,7 @@ function Course({ courseInfo }: propTypes) {
     weight: 0,
   });
   const dispatch = useDispatch();
+  const [currAssessment, setCurrAssessment] = useState("");
 
   return (
     <Container>
@@ -140,7 +141,7 @@ function Course({ courseInfo }: propTypes) {
               </TableHead>
               <TableBody>
                 {courseInfo.assessments.map((c) => (
-                  <TableRow>
+                  <TableRow key={c.name}>
                     <TableCell>{c.name}</TableCell>
                     <TableCell>{c.weight}</TableCell>
                     <TableCell>
@@ -169,41 +170,14 @@ function Course({ courseInfo }: propTypes) {
                       </IconButton>
                       <IconButton
                         aria-label="delete"
-                        onClick={() => setIsDeleteOpen(true)}
+                        onClick={() => {
+                          setCurrAssessment(c.name);
+                          setIsDeleteOpen(true);
+                        }}
                       >
                         <DeleteIcon />
                       </IconButton>
                     </TableCell>
-                    {/* Delete Assessment */}
-                    <Dialog
-                      open={isDeleteOpen}
-                      onClose={() => setIsDeleteOpen(false)}
-                    >
-                      <DialogTitle>Delete Assessment</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText color="white">
-                          Are you sure you want to delete this assessment ?
-                        </DialogContentText>
-                      </DialogContent>
-                      <DialogActions>
-                        <Button onClick={() => setIsDeleteOpen(false)}>
-                          No
-                        </Button>
-                        <Button
-                          onClick={() => {
-                            dispatch(
-                              deleteAssessment({
-                                courseCode: courseInfo.code,
-                                assessmentName: c.name,
-                              })
-                            );
-                            setIsDeleteOpen(false);
-                          }}
-                        >
-                          Yes
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
                   </TableRow>
                 ))}
               </TableBody>
@@ -211,6 +185,33 @@ function Course({ courseInfo }: propTypes) {
           </TableContainer>
         </Box>
       </Box>
+
+      {/* Delete Assessment */}
+      <Dialog open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
+        <DialogTitle>Delete Assessment</DialogTitle>
+        <DialogContent>
+          <DialogContentText color="white">
+            Are you sure you want to delete this assessment ?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setIsDeleteOpen(false)}>No</Button>
+          <Button
+            onClick={() => {
+              console.log(currAssessment);
+              dispatch(
+                deleteAssessment({
+                  courseCode: courseInfo.code,
+                  assessmentName: currAssessment,
+                })
+              );
+              setIsDeleteOpen(false);
+            }}
+          >
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Add Assessment Dialog */}
       <Dialog open={isAddOpen} onClose={() => setIsAddOpen(false)}>
