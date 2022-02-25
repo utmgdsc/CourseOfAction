@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Toolbar,
   Divider,
@@ -12,22 +12,16 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
 
-function NavDrawer() {
-  const courses = useSelector((state: RootState) => state.courses);
+interface Props {
+  isOpen: boolean;
+  window?: () => Window;
+  handleDrawerToggle: Function;
+}
 
-  return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        width: "275px",
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: "275px", boxSizing: "border-box" },
-        paper: {
-          backgroundColor: "#484848",
-        },
-      }}
-      anchor="right"
-    >
+function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
+  const courses = useSelector((state: RootState) => state.courses);
+  const drawerInfo = (
+    <Box>
       <Toolbar />
       <Box sx={{ overflow: "auto" }}>
         <Divider />
@@ -43,7 +37,46 @@ function NavDrawer() {
             ))}
         </List>
       </Box>
-    </Drawer>
+    </Box>
+  );
+
+  const container =
+    window !== undefined ? () => window().document.body : undefined;
+
+  return (
+    <Box>
+      {console.log(container)}
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: "275px",
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: "275px", boxSizing: "border-box" },
+          display: { xs: "none", md: "block" },
+        }}
+        anchor="right"
+      >
+        {drawerInfo}
+      </Drawer>
+      <Drawer
+        variant="temporary"
+        container={container}
+        sx={{
+          width: "275px",
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: "275px", boxSizing: "border-box" },
+          display: { xs: "block", md: "none" },
+        }}
+        anchor="right"
+        open={isOpen}
+        onClose={() => handleDrawerToggle()}
+        ModalProps={{
+          keepMounted: true, // Better open performance on mobile.
+        }}
+      >
+        {drawerInfo}
+      </Drawer>
+    </Box>
   );
 }
 

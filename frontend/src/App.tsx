@@ -3,7 +3,6 @@ import "./App.css";
 import Course from "./components/Course";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
-import NavDrawer from "./components/NavDrawer";
 import Navbar from "./components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/index";
@@ -38,8 +37,7 @@ function App() {
         <CookiesProvider>
           <Box>
             <Navbar updateThemeCookie={setCookies} />
-            <NavDrawer />
-            <Box component="main" mr="275px" mt="75px">
+            <Box component="main" sx={{ mr: { md: "275px" } }} mt="75px">
               <BrowserRouter>
                 <Routes>
                   <Route

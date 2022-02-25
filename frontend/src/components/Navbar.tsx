@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   AppBar,
   Typography,
@@ -7,14 +7,17 @@ import {
   Box,
   Switch,
   SwitchProps,
+  IconButton,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
+import MenuIcon from "@mui/icons-material/Menu";
 import { useDispatch } from "react-redux";
 import { toggleTheme } from "../store/theme";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
+import NavDrawer from "./NavDrawer";
 
 const IOSSwitch = styled((props: SwitchProps) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -74,42 +77,62 @@ interface propTypes {
 function Navbar({ updateThemeCookie }: propTypes) {
   const dispatch = useDispatch();
   const darkMode = useSelector((store: RootState) => store.theme.darkMode);
+  const [isMobileDrawer, setIsMobileDrawer] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setIsMobileDrawer(!isMobileDrawer);
+  };
+
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-      }}
-    >
-      <Toolbar sx={{ justifyContent: "space-between" }}>
-        <Box sx={{ display: "flex" }}>
-          <Avatar sx={{ mr: "5px" }} src="/grade.png" />
-          <Typography
-            fontWeight="bold"
-            fontSize="30px"
-            color="primary.main"
-            noWrap
-            component="div"
-          >
-            CourseOfAction
-          </Typography>
-        </Box>
-        <Box>
-          <Box sx={{ display: "flex", alignItems: "center" }}>
-            <LightModeIcon fontSize="large" />
-            <IOSSwitch
-              sx={{ m: 1 }}
-              checked={darkMode.valueOf()}
-              onChange={() => {
-                updateThemeCookie("darkMode", !darkMode.valueOf());
-                dispatch(toggleTheme());
-              }}
-            />
-            <DarkModeIcon fontSize="large" />
+    <Box>
+      <NavDrawer
+        isOpen={isMobileDrawer}
+        handleDrawerToggle={handleDrawerToggle}
+      />
+      <AppBar
+        position="fixed"
+        sx={{
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+      >
+        <Toolbar sx={{ justifyContent: "space-between" }}>
+          <Box sx={{ display: "flex" }}>
+            <Avatar sx={{ mr: "5px" }} src="/grade.png" />
+            <Typography
+              fontWeight="bold"
+              fontSize="30px"
+              color="primary.main"
+              noWrap
+              component="div"
+            >
+              CourseOfAction
+            </Typography>
           </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <LightModeIcon fontSize="large" />
+              <IOSSwitch
+                sx={{ m: 1 }}
+                checked={darkMode.valueOf()}
+                onChange={() => {
+                  updateThemeCookie("darkMode", !darkMode.valueOf());
+                  dispatch(toggleTheme());
+                }}
+              />
+              <DarkModeIcon fontSize="large" />
+            </Box>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              onClick={handleDrawerToggle}
+              sx={{ ml: 2, display: { md: "none" } }}
+            >
+              <MenuIcon fontSize="large" />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
 
