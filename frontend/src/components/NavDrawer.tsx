@@ -8,6 +8,7 @@ import {
   Drawer,
   Box,
   Typography,
+  Link
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
@@ -35,6 +36,11 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
                 </ListItemText>
               </ListItem>
             ))}
+            <ListItem button sx={{ borderRadius: 2 }} key="addCourse">
+                <ListItemText>
+                  <Link sx={{ fontSize: "20px", fontStyle: "bold" }} href='add'>Add Course</Link>
+                </ListItemText>
+            </ListItem>
         </List>
       </Box>
     </Box>
