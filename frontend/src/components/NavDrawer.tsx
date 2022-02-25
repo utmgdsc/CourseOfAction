@@ -8,11 +8,11 @@ import {
   Drawer,
   Box,
   Typography,
-  Link
+  Button,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
-
+import { useNavigate } from "react-router-dom";
 interface Props {
   isOpen: boolean;
   window?: () => Window;
@@ -21,6 +21,7 @@ interface Props {
 
 function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
   const courses = useSelector((state: RootState) => state.courses);
+  const navigation = useNavigate();
   const drawerInfo = (
     <Box>
       <Toolbar />
@@ -36,11 +37,21 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
                 </ListItemText>
               </ListItem>
             ))}
-            <ListItem button sx={{ borderRadius: 2 }} key="addCourse">
-                <ListItemText>
-                  <Link sx={{ fontSize: "20px", fontStyle: "bold" }} href='add'>Add Course</Link>
-                </ListItemText>
-            </ListItem>
+          <ListItem button sx={{ borderRadius: 2 }} key="addCourse">
+            <ListItemText>
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                sx={{ color: "white" }}
+                onClick={() => {
+                  navigation("/add");
+                }}
+              >
+                Add Course
+              </Button>
+            </ListItemText>
+          </ListItem>
         </List>
       </Box>
     </Box>

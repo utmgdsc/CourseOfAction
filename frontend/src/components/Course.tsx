@@ -218,7 +218,7 @@ function Course({ courseInfo }: propTypes) {
         <DialogTitle>Add Assessment</DialogTitle>
         <DialogContent>
           <DialogContentText color="white">
-            Please fill in the following details to create a course.
+            Please fill in the following details to create an assessment.
           </DialogContentText>
           <TextField
             autoFocus

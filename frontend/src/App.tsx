@@ -37,21 +37,18 @@ function App() {
       <CssBaseline>
         <CookiesProvider>
           <Box>
-            <Navbar updateThemeCookie={setCookies} />
-            <Box component="main" sx={{ mr: { md: "275px" } }} mt="75px">
-              <BrowserRouter>
+            <BrowserRouter>
+              <Navbar updateThemeCookie={setCookies} />
+              <Box component="main" sx={{ mr: { md: "275px" } }} mt="75px">
                 <Routes>
                   <Route
                     path="/"
                     element={<Course courseInfo={courses[0]} />}
                   />
-                  <Route
-                    path="/add"
-                    element={<AddCourse />}
-                  />
+                  <Route path="/add" element={<AddCourse />} />
                 </Routes>
-              </BrowserRouter>
-            </Box>
+              </Box>
+            </BrowserRouter>
           </Box>
         </CookiesProvider>
       </CssBaseline>
