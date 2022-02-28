@@ -17,8 +17,8 @@ export interface CourseInterface {
   expectedGrade: number;
   familiarity: number;
   offering: string;
-  currMark: number;
-  currGrade: number;
+  currMark: number; // calculated
+  currGrade: number; // calculated
   assessments: Assessment[];
 }
 
@@ -32,11 +32,11 @@ const initialState: Courses = {
       assessments: [
         {
           name: "Assignment 1",
-          customReminder: "2022/01/16", // Need to be date, error in database
-          deadline: "2022/01/22", // Need to be date, error in database
+          customReminder: "01/16/2022", // Need to be date, error in database
+          deadline: "01/22/2022", // Need to be date, error in database
           isCompleted: true, // Need to be boolean, error in database
           mark: 88,
-          reminder: "2022/01/19", // Need to be date, error in database
+          reminder: "01/19/2022", // Need to be date, error in database
           weight: 25,
         },
       ],
@@ -95,10 +95,11 @@ const coursesSlice = createSlice({
         // Error handling
         return;
       }
-      const indexToUpdate = state.currentCourses[
-        courseIndex
-      ].assessments.findIndex((element) => element.name === assessment.name);
-      state.currentCourses[courseIndex].assessments[indexToUpdate] = assessment;
+      state.currentCourses[courseIndex].assessments = payload;
+      // const indexToUpdate = state.currentCourses[
+      //   courseIndex
+      // ].assessments.findIndex((element) => element.name === assessment.name);
+      // state.currentCourses[courseIndex].assessments[indexToUpdate] = assessment;
     },
   },
 });
