@@ -62,7 +62,6 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
 
   return (
     <Box>
-      {console.log(container)}
       <Drawer
         variant="permanent"
         sx={{
