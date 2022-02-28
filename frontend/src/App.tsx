@@ -26,7 +26,6 @@ function App() {
 
   useEffect(() => {
     if (!cookies["darkMode"]) {
-      console.log(cookies["darkMode"], "HERE");
       setCookies("darkMode", true);
     } else
       dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
