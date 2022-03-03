@@ -14,11 +14,12 @@ export interface CourseInterface {
   code: string;
   name: string;
   credit: number;
-  expectedGrade: number;
+  expectedMark: number;
   familiarity: number;
   offering: string;
   currMark: number; // calculated
-  currGrade: number; // calculated
+  scoreRequired: number;
+  percentLeft: number;
   assessments: Assessment[];
 }
 
@@ -42,12 +43,13 @@ const initialState: Courses = {
       ],
       name: "Introduction to Computer Programming",
       credit: 0.5,
-      expectedGrade: 90,
+      expectedMark: 90,
       familiarity: 5,
       offering: "W2022",
       currMark: 80,
-      currGrade: 3.5,
       code: "CSC108H5",
+      scoreRequired: 90,
+      percentLeft: 0,
     },
   ],
 };

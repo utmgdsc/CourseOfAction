@@ -1,6 +1,5 @@
 import { Container, Typography, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import Assessments from "../components/Assessments";
 import { CourseInterface, updateAssessment } from "../store/courses";
 
@@ -10,15 +9,55 @@ interface propTypes {
 
 function Course({ courseInfo }: propTypes) {
   // const [isDeleteOpen, setIsDeleteOpen] = useState(false);
-  const dispatch = useDispatch();
-  const [currAssessment, setCurrAssessment] = useState("");
   const [assessments, setAssessments] = useState(courseInfo.assessments);
   const [course, setCourse] = useState(courseInfo);
+
   useEffect(() => {
     // To update tabledata on assessments change
-    setCourse({ ...course, assessments: assessments });
+    updateCourse();
+  }, []);
+
+  useEffect(() => {
+    // To update tabledata on assessments change
+    updateCourse();
   }, [assessments]);
-  console.log(assessments, courseInfo.assessments);
+
+  const calculateGradeData = (desiredScore: number) => {
+    let currentWeight: number = 0;
+    let percentScored = 0;
+    assessments.forEach((assessment) => {
+      const { mark, weight } = assessment;
+      currentWeight += weight;
+      percentScored += (mark / 100) * weight;
+    });
+    // Overall Percentages
+    const percentLeft = 100 - parseFloat(currentWeight.toFixed(2));
+    // const percentLost = currentWeight - percentScored
+    const scoreRequired = parseFloat(
+      ((desiredScore - percentScored) * (100 / percentLeft)).toFixed(2)
+    );
+
+    console.log(scoreRequired, desiredScore);
+
+    return {
+      percentLeft,
+      scoreRequired,
+      percentScored,
+    };
+  };
+
+  const updateCourse = () => {
+    const { percentLeft, scoreRequired, percentScored } = calculateGradeData(
+      course.expectedMark
+    );
+    setCourse({
+      ...course,
+      scoreRequired,
+      currMark: percentScored,
+      percentLeft: percentLeft,
+    });
+  };
+
   return (
     <Container>
       <Box my={5}>
@@ -34,12 +73,12 @@ function Course({ courseInfo }: propTypes) {
               color="green.main"
               align="center"
             >
-              {courseInfo.currMark}
+              {course.currMark}
             </Typography>
           </Stack>
           <Stack>
             <Typography variant="h2" color="primary.main">
-              Expected Mark
+              Required Score
             </Typography>
             <Typography
               variant="h2"
@@ -47,22 +86,10 @@ function Course({ courseInfo }: propTypes) {
               color="primary.main"
               align="center"
             >
-              {courseInfo.expectedGrade}
+              {course.scoreRequired}
             </Typography>
           </Stack>
-          <Stack>
-            <Typography variant="h2" color="orange.main">
-              Current Grade
-            </Typography>
-            <Typography
-              variant="h2"
-              fontSize="h1.fontSize"
-              color="orange.main"
-              align="center"
-            >
-              {courseInfo.currGrade}
-            </Typography>
-          </Stack>
+          {/* <Stack></Stack> */}
         </Stack>
 
         <Assessments tableData={assessments} setTableData={setAssessments} />
