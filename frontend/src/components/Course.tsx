@@ -2,6 +2,10 @@ import { Container, Typography, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
 import { CourseInterface, updateAssessment } from "../store/courses";
+import { Doughnut } from "react-chartjs-2";
+import { useTheme } from "@mui/system";
+import { Chart, ArcElement } from "chart.js";
+Chart.register(ArcElement);
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -11,6 +15,7 @@ function Course({ courseInfo }: propTypes) {
   // const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [assessments, setAssessments] = useState(courseInfo.assessments);
   const [course, setCourse] = useState(courseInfo);
+  const theme = useTheme();
 
   useEffect(() => {
     // To update tabledata on assessments change
@@ -21,6 +26,21 @@ function Course({ courseInfo }: propTypes) {
     // To update tabledata on assessments change
     updateCourse();
   }, [assessments]);
+
+  const data = {
+    labels: ["Completed", "Left"],
+    datasets: [
+      {
+        label: "Completed",
+        data: [100 - course.percentLeft, course.percentLeft],
+        backgroundColor: [
+          theme.palette.primary.main,
+          theme.palette.text.primary,
+        ],
+        hoverOffset: 2,
+      },
+    ],
+  };
 
   const calculateGradeData = (desiredScore: number) => {
     let currentWeight: number = 0;
@@ -89,7 +109,28 @@ function Course({ courseInfo }: propTypes) {
               {course.scoreRequired}
             </Typography>
           </Stack>
-          {/* <Stack></Stack> */}
+          <Stack alignContent="center">
+            <Typography
+              textAlign="center"
+              variant="h2"
+              mb={2}
+              color="primary.main"
+            >
+              {100 - course.percentLeft}% Completed
+            </Typography>
+
+            <Doughnut
+              data={data}
+              options={{
+                maintainAspectRatio: true,
+                responsive: true,
+                layout: {
+                  autoPadding: true,
+                },
+                plugins: {},
+              }}
+            />
+          </Stack>
         </Stack>
 
         <Assessments tableData={assessments} setTableData={setAssessments} />
