@@ -13,9 +13,10 @@ function Course({ courseInfo }: propTypes) {
   const dispatch = useDispatch();
   const [currAssessment, setCurrAssessment] = useState("");
   const [assessments, setAssessments] = useState(courseInfo.assessments);
+  const [course, setCourse] = useState(courseInfo);
   useEffect(() => {
     // To update tabledata on assessments change
-    dispatch(updateAssessment(assessments));
+    setCourse({ ...course, assessments: assessments });
   }, [assessments]);
   console.log(assessments, courseInfo.assessments);
   return (
