@@ -18,7 +18,6 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Assessment, addAssessment, deleteAssessment } from "../store/courses";
-import { useDispatch } from "react-redux";
 
 interface lstType {
   tableData: Assessment[];

@@ -2,14 +2,32 @@ import { Container, Typography, Box, Stack } from "@mui/material";
 import { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
 import { CourseInterface, updateAssessment } from "../store/courses";
-import { Doughnut } from "react-chartjs-2";
 import { useTheme } from "@mui/system";
-import { Chart, ArcElement } from "chart.js";
-Chart.register(ArcElement);
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 interface propTypes {
   courseInfo: CourseInterface;
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        className="custom-tooltip"
+        style={{
+          backgroundColor: "#ffff",
+          padding: "5px",
+          border: "1px solid #cccc",
+          color: "black",
+        }}
+      >
+        <label>{`${payload[0].value}% ${payload[0].name} `}</label>
+      </div>
+    );
+  }
+
+  return null;
+};
 
 function Course({ courseInfo }: propTypes) {
   // const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -27,20 +45,12 @@ function Course({ courseInfo }: propTypes) {
     updateCourse();
   }, [assessments]);
 
-  const data = {
-    labels: ["Completed", "Left"],
-    datasets: [
-      {
-        label: "Completed",
-        data: [100 - course.percentLeft, course.percentLeft],
-        backgroundColor: [
-          theme.palette.primary.main,
-          theme.palette.text.primary,
-        ],
-        hoverOffset: 2,
-      },
-    ],
-  };
+  const data = [
+    { name: "Completed", value: 100 - course.percentLeft },
+    { name: "Left", value: course.percentLeft },
+  ];
+
+  const COLORS = ["#00C49F", theme.palette.primary.main];
 
   const calculateGradeData = (desiredScore: number) => {
     let currentWeight: number = 0;
@@ -52,12 +62,12 @@ function Course({ courseInfo }: propTypes) {
     });
     // Overall Percentages
     const percentLeft = 100 - parseFloat(currentWeight.toFixed(2));
-    // const percentLost = currentWeight - percentScored
-    const scoreRequired = parseFloat(
-      ((desiredScore - percentScored) * (100 / percentLeft)).toFixed(2)
-    );
-
-    console.log(scoreRequired, desiredScore);
+    let scoreRequired;
+    if (percentLeft > 0)
+      scoreRequired = parseFloat(
+        ((desiredScore - percentScored) * (100 / percentLeft)).toFixed(2)
+      );
+    else scoreRequired = 0;
 
     return {
       percentLeft,
@@ -110,26 +120,32 @@ function Course({ courseInfo }: propTypes) {
             </Typography>
           </Stack>
           <Stack alignContent="center">
-            <Typography
+            {/* <Typography
               textAlign="center"
               variant="h2"
               mb={2}
               color="primary.main"
             >
-              {100 - course.percentLeft}% Completed
-            </Typography>
-
-            <Doughnut
-              data={data}
-              options={{
-                maintainAspectRatio: true,
-                responsive: true,
-                layout: {
-                  autoPadding: true,
-                },
-                plugins: {},
-              }}
-            />
+              Completed
+            </Typography> */}
+            <PieChart width={150} height={150}>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                // innerRadius={40}
+                outerRadius={60}
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  ></Cell>
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
           </Stack>
         </Stack>
 

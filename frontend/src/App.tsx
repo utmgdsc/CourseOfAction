@@ -38,7 +38,11 @@ function App() {
           <Box>
             <BrowserRouter>
               <Navbar updateThemeCookie={setCookies} />
-              <Box component="main" sx={{ mr: { md: "275px" } }} mt="75px">
+              <Box
+                component="main"
+                sx={{ mr: { md: "275px", xl: "0" } }}
+                mt="75px"
+              >
                 <Routes>
                   <Route
                     path="/"
