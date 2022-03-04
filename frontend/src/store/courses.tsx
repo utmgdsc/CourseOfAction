@@ -98,10 +98,6 @@ const coursesSlice = createSlice({
         return;
       }
       state.currentCourses[courseIndex].assessments = payload;
-      // const indexToUpdate = state.currentCourses[
-      //   courseIndex
-      // ].assessments.findIndex((element) => element.name === assessment.name);
-      // state.currentCourses[courseIndex].assessments[indexToUpdate] = assessment;
     },
   },
 });

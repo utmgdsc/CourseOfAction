@@ -29,6 +29,29 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
+interface InfoInterface {
+  title: string;
+  desc: React.ReactChild | string;
+  color: string;
+}
+
+const Info = ({ title, desc, color }: InfoInterface) => {
+  return (
+    <Stack alignItems={{ xs: "center", lg: "left" }} mb={{ xs: 2, lg: 0 }}>
+      <Typography variant="h2" color={color}>
+        {title}
+      </Typography>
+      {typeof desc === "object" ? (
+        desc
+      ) : (
+        <Typography variant="h2" fontSize="h1.fontSize" color={color}>
+          {desc}
+        </Typography>
+      )}
+    </Stack>
+  );
+};
+
 function Course({ courseInfo }: propTypes) {
   // const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [assessments, setAssessments] = useState(courseInfo.assessments);
@@ -92,97 +115,51 @@ function Course({ courseInfo }: propTypes) {
     <Container>
       <Box my={5}>
         <Typography variant="h1">{courseInfo.code}</Typography>
-        <Stack direction="row" justifyContent="space-between" mt="20px" mx={10}>
-          <Stack>
-            <Typography variant="h2" color="green.main">
-              Current Mark
-            </Typography>
-            <Typography
-              variant="h2"
-              fontSize="h1.fontSize"
-              color="green.main"
-              align="center"
-            >
-              {course.currMark}
-            </Typography>
-          </Stack>
-          <Stack>
-            <Typography variant="h2" color="primary.main">
-              Required Score
-            </Typography>
-            <Typography
-              variant="h2"
-              fontSize="h1.fontSize"
-              color="primary.main"
-              align="center"
-            >
-              {course.scoreRequired}
-            </Typography>
-          </Stack>
-          <Stack alignContent="center">
-            {/* <Typography
-              textAlign="center"
-              variant="h2"
-              mb={2}
-              color="primary.main"
-            >
-              Completed
-            </Typography> */}
-            <PieChart width={150} height={150}>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                // innerRadius={40}
-                outerRadius={60}
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={COLORS[index % COLORS.length]}
-                  ></Cell>
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          </Stack>
+        <Stack
+          direction={{ xs: "column", lg: "row" }}
+          sx={{ direction: "column" }}
+          justifyContent="space-between"
+          mt="20px"
+          mx={10}
+        >
+          <Info
+            title="Current Mark"
+            desc={course.currMark}
+            color="green.main"
+          />
+          <Info
+            title="Required Score"
+            desc={course.scoreRequired}
+            color="primary.main"
+          />
+          <Info
+            title=""
+            color=""
+            desc={
+              <PieChart width={150} height={150}>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  // innerRadius={40}
+                  outerRadius={60}
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={COLORS[index % COLORS.length]}
+                    ></Cell>
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            }
+          />
         </Stack>
 
         <Assessments tableData={assessments} setTableData={setAssessments} />
       </Box>
-
-      {/* Delete Assessment
-      <Dialog open={isDeleteOpen} onClose={() => setIsDeleteOpen(false)}>
-        <DialogTitle>Delete Assessment</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this assessment?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setIsDeleteOpen(false)}>No</Button>
-          <Button
-            onClick={() => {
-              console.log(currAssessment);
-              dispatch(
-                deleteAssessment({
-                  courseCode: courseInfo.code,
-                  assessmentName: currAssessment,
-                })
-              );
-              const indexToDelete = assessments.findIndex(
-                (e) => e.name === currAssessment
-              );
-              assessments.splice(indexToDelete, 1);
-              setAssessments(assessments);
-              setIsDeleteOpen(false);
-            }}
-          >
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog> */}
     </Container>
   );
 }

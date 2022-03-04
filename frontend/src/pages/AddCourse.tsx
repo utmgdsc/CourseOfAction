@@ -27,9 +27,9 @@ function AddCourse() {
       <Typography variant="h2" my={2}>
         Input Manually
       </Typography>
-      <Box>
+      <Box mb={4}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 3, md: 6 }}>
-          <Grid container item xs={6} direction="column">
+          <Grid container item xs={12} md={6} direction="column">
             <Typography variant="h6">Course Code</Typography>
             <TextField id="outlined-basic" variant="outlined" />
             <Typography variant="h6">Offering</Typography>
@@ -47,7 +47,7 @@ function AddCourse() {
               />
             </Box>
           </Grid>
-          <Grid container item xs={6} direction="column">
+          <Grid container item xs={12} md={6} direction="column">
             <Typography variant="h6">Course Name</Typography>
             <TextField id="outlined-basic" variant="outlined" />
             <Typography variant="h6">Credit</Typography>

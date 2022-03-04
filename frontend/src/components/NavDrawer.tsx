@@ -37,20 +37,18 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
                 </ListItemText>
               </ListItem>
             ))}
-          <ListItem button sx={{ borderRadius: 2 }} key="addCourse">
-            <ListItemText>
-              <Button
-                variant="contained"
-                color="primary"
-                size="large"
-                sx={{ color: "white" }}
-                onClick={() => {
-                  navigation("/add");
-                }}
-              >
-                Add Course
-              </Button>
-            </ListItemText>
+          <ListItem sx={{ borderRadius: 2 }} key="addCourse">
+            <Button
+              variant="contained"
+              color="primary"
+              size="large"
+              sx={{ color: "white" }}
+              onClick={() => {
+                navigation("/add");
+              }}
+            >
+              Add Course
+            </Button>
           </ListItem>
         </List>
       </Box>
