@@ -1,9 +1,11 @@
 import { Container, Typography, Box, Stack } from "@mui/material";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
 import { CourseInterface, updateAssessment } from "../store/courses";
 import { useTheme } from "@mui/system";
+import { Tooltip as MUIToolTip } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { TooltipProps } from "@mui/material/Tooltip";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -33,10 +35,11 @@ interface InfoInterface {
   title: string;
   desc: React.ReactChild | string;
   color: string;
+  tooltip: null | NonNullable<React.ReactNode>;
 }
 
-const Info = ({ title, desc, color }: InfoInterface) => {
-  return (
+const Info = ({ title, desc, color, tooltip }: InfoInterface) => {
+  const stack = (
     <Stack alignItems={{ xs: "center", lg: "left" }} mb={{ xs: 2, lg: 0 }}>
       <Typography variant="h2" color={color}>
         {title}
@@ -50,10 +53,14 @@ const Info = ({ title, desc, color }: InfoInterface) => {
       )}
     </Stack>
   );
+  return tooltip && typeof tooltip === "object" ? (
+    <MUIToolTip title={tooltip}>{stack}</MUIToolTip>
+  ) : (
+    stack
+  );
 };
 
 function Course({ courseInfo }: propTypes) {
-  // const [isDeleteOpen, setIsDeleteOpen] = useState(false);
   const [assessments, setAssessments] = useState(courseInfo.assessments);
   const [course, setCourse] = useState(courseInfo);
   const theme = useTheme();
@@ -123,18 +130,27 @@ function Course({ courseInfo }: propTypes) {
           mx={10}
         >
           <Info
-            title="Current Mark"
-            desc={course.currMark}
+            title="Current Percent"
+            desc={course.currMark + "%"}
             color="green.main"
+            tooltip={
+              <React.Fragment>
+                <Typography color="inherit">Tooltip with HTML</Typography>
+                <em>{"And here's"}</em> <b>{"some"}</b>{" "}
+                <u>{"amazing content"}</u>. {"It's very engaging. Right?"}
+              </React.Fragment>
+            }
           />
           <Info
-            title="Required Score"
-            desc={course.scoreRequired}
+            title="Required Percent"
+            desc={course.scoreRequired + "%"}
             color="primary.main"
+            tooltip={null}
           />
           <Info
             title=""
             color=""
+            tooltip={null}
             desc={
               <PieChart width={150} height={150}>
                 <Pie
@@ -157,6 +173,34 @@ function Course({ courseInfo }: propTypes) {
             }
           />
         </Stack>
+
+        {course.scoreRequired < 0 ? (
+          <Box border={1} borderColor="green.main" borderRadius={4} p={5}>
+            <Typography variant="h5" color="green.main">
+              Good Job! You achieved your goal.
+            </Typography>
+            <Typography variant="subtitle1">
+              Technically you have achieved the your goal grade you can skip the
+              other assignments (if any left), however please check if the
+              syllabus you may still have to complete other assignments to pass
+              the course!
+            </Typography>
+          </Box>
+        ) : null}
+
+        {course.scoreRequired > 100 ? (
+          <Box border={1} borderColor="red" borderRadius={4} p={5}>
+            <Typography variant="h5" color="red">
+              Not possible! You cannot achieve this grade.
+            </Typography>
+            <Typography variant="subtitle1">
+              To achieve this grade you need to get a grade of{" "}
+              {`${course.scoreRequired}`}% in the remaining
+              {` ${course.percentLeft}`}% of the course, which is impossible.
+              Try changing your goal to something more realistic.
+            </Typography>
+          </Box>
+        ) : null}
 
         <Assessments tableData={assessments} setTableData={setAssessments} />
       </Box>
