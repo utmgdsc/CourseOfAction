@@ -14,6 +14,15 @@ db = firebase.database()
 def hello():
     return "Hello, welcome to api endpoint for CourseOfAction!"
 
+@app.route('/api/get_courses', methods=["GET", "POST"])
+def get_courses():
+    """
+    Function to retrieve all courses for the student
+    """
+    user = "UuT5Mb7uJKO8N6mTTv9LuyCexgl1"
+    return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
+
+
 @app.route('/api/add_course', methods=["POST"])
 def add_course():
     """
