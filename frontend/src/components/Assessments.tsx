@@ -1,9 +1,8 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, Dispatch, SetStateAction } from "react";
 import {
   DataGrid,
   GridActionsCellItem,
   GridCellEditCommitParams,
-  GridRowId,
 } from "@mui/x-data-grid";
 import {
   Box,
@@ -17,7 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Assessment, addAssessment, deleteAssessment } from "../store/courses";
+import { Assessment } from "../store/courses";
 
 interface lstType {
   tableData: Assessment[];

@@ -1,11 +1,10 @@
 import { Container, Typography, Box, Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
-import { CourseInterface, updateAssessment } from "../store/courses";
+import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
 import { Tooltip as MUIToolTip } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
-import { TooltipProps } from "@mui/material/Tooltip";
 
 interface propTypes {
   courseInfo: CourseInterface;

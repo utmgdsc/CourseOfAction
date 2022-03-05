@@ -2,8 +2,10 @@ import datetime
 import json
 import pyrebase
 from flask import Flask, jsonify, make_response, request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
 # Connect to Firebase Realtime DB
 firebase = pyrebase.initialize_app(json.load(open('secrets.json')))
 auth = firebase.auth()
@@ -24,11 +26,13 @@ def get_courses():
 
 
 @app.route('/api/add_course', methods=["POST"])
+@cross_origin()
 def add_course():
     """
     Function to create a new course and add it for that specific user 
     """
     user = "UuT5Mb7uJKO8N6mTTv9LuyCexgl1"
+    print(request.form)
     data = {
         "courseName": request.form.get('courseName'),
         "offering": request.form.get('offering'),

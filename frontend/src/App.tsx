@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import Course from "./components/Course";
-import AddCourse from "./pages/AddCourse";
+import AddCourse from "./modules/AddCourse";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Box } from "@mui/material";
 import Navbar from "./components/Navbar";

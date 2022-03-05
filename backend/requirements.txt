@@ -1,3 +1,4 @@
 requests
 Flask
 Pyrebase4
+flask-cors
