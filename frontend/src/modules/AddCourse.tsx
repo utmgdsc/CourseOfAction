@@ -32,7 +32,6 @@ function AddCourse() {
     percentLeft: 0,
   });
   const [errors, setErrors] = useState({
-    name: false,
     expectedMark: false,
     offering: false,
     code: false,
@@ -51,6 +50,7 @@ function AddCourse() {
     switch (name) {
       case "code":
         newState[name] = value;
+        setErrors({ ...errors, [name]: validateCode(value) });
         break;
       case "name":
         newState[name] = value;
@@ -59,15 +59,17 @@ function AddCourse() {
         newState[name] = value;
         break;
       case "expectedMark":
-        newState[name] = value;
+        let v = value;
+        if (value > 100) v = 100;
+        if (value < 0) v = 0;
+        newState[name] = v;
+        setErrors({ ...errors, [name]: validateExpectedMark(v) });
         break;
       case "familiarity":
         newState[name] = value;
         break;
       case "offering":
-        newState[name] = value;
-        break;
-      case "currMark":
+        setErrors({ ...errors, [name]: validateOffering(value) });
         newState[name] = value;
         break;
       default:
@@ -94,7 +96,26 @@ function AddCourse() {
 
   const validateCode = (value: string) => {
     const regexEx = /^[A-Z]{3}[1-4][0-9]{2}H[135]$/im;
-    return !!value.toLowerCase().match(regexEx);
+    return !value.toLowerCase().match(regexEx);
+  };
+
+  const validateExpectedMark = (value: number) => value.toString() === "";
+
+  const validateOffering = (value: string) => {
+    const regexEx = /^[WSYF][2][0-1][0-9]{2}$/im;
+    return !value.toLowerCase().match(regexEx);
+  };
+
+  const canSubmit = () => {
+    if (errors.code || errors.expectedMark || errors.offering) return true;
+    if (
+      course.name === "" ||
+      course.code === "" ||
+      course.offering === "" ||
+      course.assessments.length === 0
+    )
+      return true;
+    return false;
   };
 
   return (
@@ -119,13 +140,19 @@ function AddCourse() {
               name="code"
               value={course.code}
               onChange={handleChange}
+              error={errors.code}
             />
-            <Typography variant="h6">Offering</Typography>
+            <Typography mb={2}>
+              Please follow the format of course code where first 3 characters
+              are capital letter, followed by 3 numbers, H and 1/3/5. For
+              example: CSC108H1, MGT130H5
+            </Typography>
+            <Typography variant="h6">Course Name</Typography>
             <TextField
               id="outlined-basic"
               variant="outlined"
-              name="offering"
-              value={course.offering}
+              name="name"
+              value={course.name}
               onChange={handleChange}
             />
             <Typography variant="h6">Familiarity</Typography>
@@ -145,14 +172,20 @@ function AddCourse() {
             </Box>
           </Grid>
           <Grid container item xs={12} md={6} direction="column">
-            <Typography variant="h6">Course Name</Typography>
+            <Typography variant="h6">Offering</Typography>
             <TextField
               id="outlined-basic"
               variant="outlined"
-              name="name"
-              value={course.name}
+              name="offering"
+              value={course.offering}
+              error={errors.offering}
               onChange={handleChange}
             />
+            <Typography mb={2}>
+              Please follow the format of course offering where first letter is
+              W/S/Y/F indicating each semesters, followed by year in YYYY
+              format. For example: W2020, F2022
+            </Typography>
             <Typography variant="h6">Credit</Typography>
             <TextField
               id="outlined-basic"
@@ -174,6 +207,7 @@ function AddCourse() {
               name="expectedMark"
               value={course.expectedMark}
               onChange={handleChange}
+              error={errors.expectedMark}
             />
           </Grid>
         </Grid>
@@ -186,6 +220,7 @@ function AddCourse() {
             sx={{ color: "white" }}
             onClick={handleSubmit}
             endIcon={<CheckCircleIcon />}
+            disabled={canSubmit()}
           >
             Submit
           </Button>
