@@ -12,6 +12,7 @@ import { dark_theme, light_theme } from "./theme";
 import { CssBaseline } from "@mui/material";
 import { useCookies, CookiesProvider } from "react-cookie";
 import { updateThemeMode } from "./store/theme";
+import Dashboard from "./modules/DashBoard";
 
 function App() {
   const courses = useSelector(
@@ -49,6 +50,10 @@ function App() {
                     element={<Course courseInfo={courses[0]} />}
                   />
                   <Route path="/add" element={<AddCourse />} />
+                  <Route
+                    path="/dashboard"
+                    element={<Dashboard courses={courses} />}
+                  />
                 </Routes>
               </Box>
             </BrowserRouter>
