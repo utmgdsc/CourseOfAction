@@ -32,21 +32,21 @@ def add_course():
     Function to create a new course and add it for that specific user 
     """
     user = "UuT5Mb7uJKO8N6mTTv9LuyCexgl1"
-    print(request.form)
-    data = {
-        "courseName": request.form.get('courseName'),
-        "offering": request.form.get('offering'),
-        "familarity": request.form.get('familarity'),
-        "credit": request.form.get('credit'),
-    }
-    data["assessments"] = parse_assessments(request.form.get('assessments', []))
-    if not (request.form.get('courseCode') and data['courseName']):
+    if not (request.json) or not(request.json.get('code', None) and request.json.get('name', None)):
         return make_response(jsonify(message='Error missing required course information'), 400)
+
+    #make sure the course code is unique
+    existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(request.json['code']).get().val()
+    if existing_course:
+        print(existing_course)
+        return make_response(jsonify(message='Error course already exists'), 403)
+
     try:
-        db.child('users').child(user).child("courses").child(request.form['courseCode']).set(data)
-        db.child('Courses').child(request.form['courseCode']).set(data)
+        db.child('users').child(user).child("courses").child(request.json['code']).set(request.json)
+        # TOOD: add this later
+        # db.child('Courses').child(request.form['courseCode']).set(request.json)
         # auth.send_email_verification(user['idToken'])
-        return jsonify(data)
+        return jsonify(messge="success")
     except:
         return make_response(jsonify(message='Error creating course'), 401)
 
@@ -75,4 +75,4 @@ def generate_reminders(familiarity, assessments):
 
 
 if __name__ == "__main__":
-    app.run()
+    app.run() #debug=True for hot reload
