@@ -84,8 +84,12 @@ function AddCourse() {
     const config = {
       headers: { "Content-Type": "multipart/form-data" },
     };
-    axios
-      .post(`${apiURL}/add_course`, course)
+    axios({
+      method: "POST",
+      url: `${apiURL}/add_course`,
+      data: JSON.stringify(course),
+      headers: { "Content-Type": "application/json" },
+    })
       .then((res) => {
         navigate("/");
       })
