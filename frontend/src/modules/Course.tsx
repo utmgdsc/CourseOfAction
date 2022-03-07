@@ -4,7 +4,7 @@ import Assessments from "../components/Assessments";
 import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
 import { Tooltip as MUIToolTip } from "@mui/material";
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -65,9 +65,10 @@ function Course({ courseInfo }: propTypes) {
   const theme = useTheme();
 
   useEffect(() => {
-    // To update tabledata on assessments change
-    updateCourse();
-  }, []);
+    // To update course state when rendering a new course
+    setCourse(courseInfo);
+    setAssessments(courseInfo.assessments);
+  }, [courseInfo]);
 
   useEffect(() => {
     // To update tabledata on assessments change
@@ -126,7 +127,6 @@ function Course({ courseInfo }: propTypes) {
           sx={{ direction: "column" }}
           justifyContent="space-between"
           mt="20px"
-          mx={10}
         >
           <Info
             title="Current Percent"
@@ -134,41 +134,61 @@ function Course({ courseInfo }: propTypes) {
             color="green.main"
             tooltip={
               <React.Fragment>
-                <Typography color="inherit">Tooltip with HTML</Typography>
-                <em>{"And here's"}</em> <b>{"some"}</b>{" "}
-                <u>{"amazing content"}</u>. {"It's very engaging. Right?"}
+                This is the percentage you have in the course as of the mark you
+                provided
               </React.Fragment>
             }
           />
           <Info
             title="Required Percent"
+            desc={course.expectedMark - course.currMark + "%"}
+            color="primary.main"
+            tooltip={
+              <React.Fragment>
+                You need to score {course.expectedMark - course.currMark + "%"}{" "}
+                in the remaining {course.percentLeft}% course assessments to get{" "}
+                {course.expectedMark}% in this course
+              </React.Fragment>
+            }
+          />
+          <Info
+            title="Required Mark"
             desc={course.scoreRequired + "%"}
             color="primary.main"
-            tooltip={null}
+            tooltip={
+              <React.Fragment>
+                You need to score {course.scoreRequired + "%"} in each
+                assessment from now on to end up with your desired mark in this
+                course which is {course.expectedMark}%
+              </React.Fragment>
+            }
           />
           <Info
             title=""
             color=""
             tooltip={null}
             desc={
-              <PieChart width={150} height={150}>
-                <Pie
-                  data={data}
-                  cx="50%"
-                  cy="50%"
-                  // innerRadius={40}
-                  outerRadius={60}
-                  dataKey="value"
-                >
-                  {data.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    ></Cell>
-                  ))}
-                </Pie>
-                <Tooltip content={<CustomTooltip />} />
-              </PieChart>
+              <Box width={150} height={150}>
+                <ResponsiveContainer>
+                  <PieChart width={150} height={150}>
+                    <Pie
+                      data={data}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={60}
+                      dataKey="value"
+                    >
+                      {data.map((entry, index) => (
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
+                        ></Cell>
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </Box>
             }
           />
         </Stack>

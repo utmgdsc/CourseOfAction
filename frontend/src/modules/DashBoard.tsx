@@ -2,17 +2,16 @@ import { Container, Button, Typography, Box, Grid } from "@mui/material";
 import { CourseInterface } from "../store/courses";
 import {
   BarChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Bar,
   Legend,
-  ResponsiveContainer,
   PieChart,
   Pie,
   Cell,
+  ResponsiveContainer,
 } from "recharts";
 import { useTheme } from "@mui/system";
 
@@ -44,15 +43,17 @@ function Dashboard({ courses }: propTypes) {
   const calculateGradeData = () => {
     let currentWeight: number = 0;
     let percentLeft: number = 100 * courses.length;
+    let totalCourse: number = 0;
     courses.forEach((course) => {
       course.assessments.forEach((assessment) => {
         const { weight } = assessment;
         currentWeight += weight;
+        totalCourse += 1;
       });
     });
     return [
-      { name: "Completed", value: currentWeight },
-      { name: "Left", value: percentLeft - currentWeight },
+      { name: "Completed", value: currentWeight / 3 },
+      { name: "Left", value: (percentLeft - currentWeight) / 3 },
     ];
   };
   let data = calculateGradeData();
@@ -60,48 +61,37 @@ function Dashboard({ courses }: propTypes) {
 
   return (
     <Container>
-      <Typography variant="h3" color={COLORS[1]}>
+      <Typography variant="h1" color="primary.main">
         Dashboard
       </Typography>
-      <br />
-      <Typography variant="h6">Current Grade Breakdown</Typography>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={6}>
+        <Grid item xs={12} lg={6} textAlign={{ xs: "center", lg: "left" }}>
           <Typography variant="h6">CGPA data here</Typography>
         </Grid>
-        <Grid item md={3}>
-          <PieChart width={250} height={250}>
-            <Pie
-              data={data}
-              cx="50%"
-              cy="50%"
-              // innerRadius={40}
-              outerRadius={90}
-              dataKey="value"
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={COLORS[index % COLORS.length]}
-                ></Cell>
-              ))}
-            </Pie>
-            <Tooltip content={<CustomTooltip />} />
-          </PieChart>
+        <Grid item xs={12} lg={6} sx={{ height: "300px" }}>
+          <ResponsiveContainer>
+            <PieChart>
+              <Pie
+                data={data}
+                cx="50%"
+                cy="50%"
+                outerRadius={90}
+                dataKey="value"
+              >
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={COLORS[index % COLORS.length]}
+                  ></Cell>
+                ))}
+              </Pie>
+              <Tooltip content={<CustomTooltip />} />
+            </PieChart>
+          </ResponsiveContainer>
         </Grid>
-        <Grid item xs={6}>
-          <Box component="span" sx={{ p: 2 }}>
-            <BarChart
-              width={500}
-              height={200}
-              data={courses}
-              // margin={{
-              //   top: 5,
-              //   right: 30,
-              //   left: 20,
-              //   bottom: 5,
-              // }}
-            >
+        <Grid item xs={12} lg={6} sx={{ width: "100%", height: "200px" }}>
+          <ResponsiveContainer>
+            <BarChart height={200} data={courses}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey={"code"} />
               <YAxis />
@@ -110,63 +100,52 @@ function Dashboard({ courses }: propTypes) {
               <Bar dataKey={"currMark"} fill={COLORS[0]} />
               <Bar dataKey={"expectedMark"} fill={COLORS[1]} />
             </BarChart>
-          </Box>
+          </ResponsiveContainer>
         </Grid>
-        <Grid item xs={6}>
-          <Container
+        <Grid item xs={12} lg={6}>
+          <Box
             style={{
               backgroundColor: "#595959",
               borderRadius: "18px",
             }}
+            p={3}
           >
             <Box
               sx={{
                 display: "flex",
                 flexDirection: "row",
-
-                // justifyContent: "space-between",
-                // borderRadius: "10px",
-                // position: "absolute",
-                // bottom: "0",
-                // right: "0",
+                alignItems: "center",
               }}
+              pb={2}
             >
-              <Typography>Next Deadline</Typography>
+              <Typography variant="h5">Next Deadline</Typography>
               <Button
                 variant="contained"
                 color="primary"
                 size="small"
-                // sx={{ }}
-                // onClick={handleSubmit}
-                // endIcon={<CheckCircleIcon />}
-                // disabled={canSubmit()}
+                sx={{ ml: 2, color: "white" }}
               >
                 More
               </Button>
             </Box>
-            <Typography>CSCI1030 - Deadline</Typography>
-            <Typography>CSCI1030 - Deadline</Typography>
-            <Typography>CSCI1030 - Deadline</Typography>
-          </Container>
+            <Box>
+              <Typography ml={3}>CSCI1030 - Deadline</Typography>
+              <Typography ml={3}>CSCI1030 - Deadline</Typography>
+              <Typography ml={3}>CSCI1030 - Deadline</Typography>
+            </Box>
+          </Box>
         </Grid>
-        <Grid>
-          <Container
+        <Grid item xs={12}>
+          <Box
             style={{
-              // display: "flex",
               alignItems: "center",
             }}
           >
             <Typography> What to work on ? </Typography>
             <Typography> GOOGLE CALANDER</Typography>
-          </Container>
+          </Box>
         </Grid>
       </Grid>
-      <Container
-        style={{
-          display: "flex",
-          alignItems: "center",
-        }}
-      ></Container>
     </Container>
   );
 }
