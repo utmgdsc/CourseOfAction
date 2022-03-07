@@ -28,15 +28,34 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
       <Box sx={{ overflow: "auto" }}>
         <Divider />
         <List>
-          {["Dashboard", "Upcoming"]
-            .concat(courses.currentCourses.map((e) => e.code))
-            .map((text, index) => (
-              <ListItem button sx={{ borderRadius: 2 }} key={index}>
-                <ListItemText>
-                  <Typography sx={{ fontSize: "20px" }}>{text}</Typography>
-                </ListItemText>
-              </ListItem>
-            ))}
+          {["Dashboard", "Upcoming"].map((text, index) => (
+            <ListItem
+              button
+              onClick={() => {
+                navigation("/" + text);
+              }}
+              sx={{ borderRadius: 2 }}
+              key={index}
+            >
+              <ListItemText>
+                <Typography sx={{ fontSize: "20px" }}>{text}</Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
+          {courses.currentCourses.map((e, i) => (
+            <ListItem
+              button
+              sx={{ borderRadius: 2 }}
+              onClick={() => {
+                navigation("/" + e.code);
+              }}
+              key={e.code}
+            >
+              <ListItemText>
+                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
           <ListItem sx={{ borderRadius: 2 }} key="addCourse">
             <Button
               variant="contained"

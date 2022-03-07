@@ -13,25 +13,36 @@ import { CssBaseline } from "@mui/material";
 import { useCookies, CookiesProvider } from "react-cookie";
 import { updateThemeMode } from "./store/theme";
 import Dashboard from "./modules/DashBoard";
+import axios from "axios";
+import { apiURL } from "./utils/constant";
+import { CourseInterface, setCourses } from "./store/courses";
 
 function App() {
   const courses = useSelector(
     (store: RootState) => store.courses.currentCourses
   );
-
   const themeMode = useSelector((store: RootState) => store.theme.darkMode);
-
   const dispatch = useDispatch();
 
   const [cookies, setCookies] = useCookies(["darkMode"]);
 
   useEffect(() => {
+    axios({
+      method: "POST",
+      url: `${apiURL}/get_courses`,
+    })
+      .then((res) => {
+        // update redux state
+        dispatch(setCourses(res.data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     if (!cookies["darkMode"]) {
       setCookies("darkMode", true);
     } else
       dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
   }, []);
-
   return (
     <ThemeProvider theme={themeMode ? dark_theme : light_theme}>
       <CssBaseline>
@@ -54,6 +65,16 @@ function App() {
                     path="/dashboard"
                     element={<Dashboard courses={courses} />}
                   />
+                  {courses.map(
+                    (
+                      e //add routes for all courses
+                    ) => (
+                      <Route
+                        path={e.code}
+                        element={<Course courseInfo={e} />}
+                      />
+                    )
+                  )}
                 </Routes>
               </Box>
             </BrowserRouter>
