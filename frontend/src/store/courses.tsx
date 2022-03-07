@@ -60,6 +60,10 @@ const coursesSlice = createSlice({
   reducers: {
     addCourse(state, action) {},
     deleteCourse(state, action) {},
+    setCourses(state, { payload }) {
+      console.log(1);
+      return { ...state, currentCourses: Object.values(payload) };
+    },
     addAssessment(state, { payload }) {
       const { courseCode, assessment } = payload;
       const courseIndex = state.currentCourses.findIndex(
@@ -104,6 +108,7 @@ const coursesSlice = createSlice({
 
 export const {
   addCourse,
+  setCourses,
   deleteAssessment,
   deleteCourse,
   addAssessment,
