@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useTheme } from "@mui/system";
+import { parser } from "../components/parser";
 
 interface propTypes {
   courses: CourseInterface[];
@@ -61,6 +62,7 @@ function Dashboard({ courses }: propTypes) {
 
   return (
     <Container>
+      <button onClick={parser}>parser</button>
       <Typography variant="h1" color="primary.main">
         Dashboard
       </Typography>
