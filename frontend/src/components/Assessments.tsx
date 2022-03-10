@@ -69,28 +69,27 @@ function Assessments({ tableData, setTableData }: lstType) {
           ...addAssessment,
           name: e.target.value,
         }));
-        if (tableData.filter((data) => data.name === e.target.value).length)
-          setAddAssessmentErrors({
-            ...addAssessmentErrors,
-            name: true,
-          });
+        setAddAssessmentErrors({
+          ...addAssessmentErrors,
+          name:
+            tableData.filter((data) => data.name === e.target.value).length !==
+            0,
+        });
         break;
       case "weight":
         setAddAsssessmentInfo((addAssessment) => ({
           ...addAssessment,
           weight: Number(e.target.value),
         }));
-        if (
-          tableData
-            .map((data) => data.weight)
-            .reduce((prev, next) => prev + next, 0) +
-            Number(e.target.value) >=
-          100
-        )
-          setAddAssessmentErrors({
-            ...addAssessmentErrors,
-            weight: true,
-          });
+        setAddAssessmentErrors({
+          ...addAssessmentErrors,
+          weight:
+            tableData
+              .map((data) => data.weight)
+              .reduce((prev, next) => prev + next, 0) +
+              Number(e.target.value) >=
+            100,
+        });
         break;
     }
   };
