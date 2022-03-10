@@ -1,6 +1,5 @@
 import { Button } from "@mui/material";
 import React from "react";
-import { parser } from "./parser";
 type State = {
   dragging: boolean;
   file: File | null;
@@ -151,7 +150,6 @@ export const FileUploaderPresentationalComponent: React.SFC<
         <span onClick={onSelectFileClick}>Select Syllabus</span>
         <span>{props.children}</span>
       </div>
-      <Button onClick={() => parser(file)}>Click to parse Data</Button>
     </div>
   );
 };
