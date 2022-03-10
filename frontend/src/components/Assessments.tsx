@@ -22,6 +22,7 @@ interface lstType {
   tableData: Assessment[];
   setTableData: Dispatch<SetStateAction<Assessment[]>>;
 }
+
 function Assessments({ tableData, setTableData }: lstType) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addAsssessmentInfo, setAddAsssessmentInfo] = useState({
@@ -33,6 +34,11 @@ function Assessments({ tableData, setTableData }: lstType) {
     reminder: "", // Need to be date, error in database
     weight: 0,
   });
+  const [addAssessmentErrors, setAddAssessmentErrors] = useState({
+    name: false,
+    weight: false,
+  });
+
   const deleteAssesments = React.useCallback(
     (id) => () => {
       setTimeout(() => {
@@ -52,6 +58,43 @@ function Assessments({ tableData, setTableData }: lstType) {
     },
     []
   );
+
+  const handleAddAssessment = (
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    field: string
+  ) => {
+    switch (field) {
+      case "name":
+        setAddAsssessmentInfo((addAssessment) => ({
+          ...addAssessment,
+          name: e.target.value,
+        }));
+        if (tableData.filter((data) => data.name === e.target.value).length)
+          setAddAssessmentErrors({
+            ...addAssessmentErrors,
+            name: true,
+          });
+        break;
+      case "weight":
+        setAddAsssessmentInfo((addAssessment) => ({
+          ...addAssessment,
+          weight: Number(e.target.value),
+        }));
+        if (
+          tableData
+            .map((data) => data.weight)
+            .reduce((prev, next) => prev + next, 0) +
+            Number(e.target.value) >=
+          100
+        )
+          setAddAssessmentErrors({
+            ...addAssessmentErrors,
+            weight: true,
+          });
+        break;
+    }
+  };
+
   const columns = [
     //   { field: "id", headerName: "ID", width: 0 },
     //   { field: "status", headerName: "Status", width: 100 },
@@ -167,13 +210,11 @@ function Assessments({ tableData, setTableData }: lstType) {
               label="Assignment name"
               type="text"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => {
-                setAddAsssessmentInfo((addAssessment) => ({
-                  ...addAssessment,
-                  name: e.target.value,
-                }));
+                handleAddAssessment(e, "name");
               }}
+              error={addAssessmentErrors.name}
             />
             <TextField
               autoFocus
@@ -181,13 +222,11 @@ function Assessments({ tableData, setTableData }: lstType) {
               label="Weightage"
               type="number"
               fullWidth
-              variant="standard"
+              variant="outlined"
               onChange={(e) => {
-                setAddAsssessmentInfo((addAssessment) => ({
-                  ...addAssessment,
-                  weight: parseFloat(e.target.value),
-                }));
+                handleAddAssessment(e, "weight");
               }}
+              error={addAssessmentErrors.weight}
             />
             <TextField
               autoFocus
@@ -195,7 +234,7 @@ function Assessments({ tableData, setTableData }: lstType) {
               label="Deadline date"
               type="date"
               fullWidth
-              variant="standard"
+              variant="outlined"
               InputLabelProps={{ shrink: true }}
               onChange={(e) => {
                 setAddAsssessmentInfo((addAssessment) => ({
@@ -210,7 +249,7 @@ function Assessments({ tableData, setTableData }: lstType) {
               label="Notification date"
               type="date"
               fullWidth
-              variant="standard"
+              variant="outlined"
               InputLabelProps={{ shrink: true }}
               onChange={(e) => {
                 setAddAsssessmentInfo((addAssessment) => ({
@@ -221,12 +260,28 @@ function Assessments({ tableData, setTableData }: lstType) {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setIsAddOpen(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                setIsAddOpen(false);
+                setAddAssessmentErrors({
+                  name: false,
+                  weight: false,
+                });
+              }}
+            >
+              Cancel
+            </Button>
             <Button
               onClick={() => {
                 setTableData([...tableData, addAsssessmentInfo]);
                 setIsAddOpen(false);
               }}
+              disabled={
+                addAssessmentErrors.name ||
+                addAssessmentErrors.weight ||
+                addAsssessmentInfo.name.length === 0 ||
+                addAsssessmentInfo.weight === 0
+              }
             >
               Add Assessment
             </Button>
