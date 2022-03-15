@@ -2,3 +2,5 @@ requests
 Flask
 Pyrebase4
 flask-cors
+tabula-py
+pandas
