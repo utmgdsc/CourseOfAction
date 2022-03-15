@@ -193,7 +193,8 @@ function Course({ courseInfo }: propTypes) {
           />
         </Stack>
 
-        {course.scoreRequired < 0 ? (
+        {course.scoreRequired < 0 ||
+        course.expectedMark - course.currMark < 0 ? (
           <Box border={1} borderColor="green.main" borderRadius={4} p={5}>
             <Typography variant="h5" color="green.main">
               Good Job! You achieved your goal.

@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import Course from "./modules/Course";
 import AddCourse from "./modules/AddCourse";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, CircularProgress } from "@mui/material";
 import Navbar from "./components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/index";
@@ -16,6 +16,7 @@ import Dashboard from "./modules/DashBoard";
 import axios from "axios";
 import { apiURL } from "./utils/constant";
 import { CourseInterface, setCourses } from "./store/courses";
+import CustomSpinner from "./components/CustomSpinner";
 
 function App() {
   const courses = useSelector(
@@ -25,58 +26,69 @@ function App() {
   const dispatch = useDispatch();
 
   const [cookies, setCookies] = useCookies(["darkMode"]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!cookies["darkMode"]) {
+      setCookies("darkMode", true);
+    } else
+      dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
+    setLoading(true);
     axios({
       method: "POST",
       url: `${apiURL}/get_courses`,
     })
       .then((res) => {
+        setLoading(false);
         // update redux state
         dispatch(setCourses(res.data));
       })
       .catch((err) => {
+        setLoading(false);
         console.log(err);
       });
-    if (!cookies["darkMode"]) {
-      setCookies("darkMode", true);
-    } else
-      dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
   }, []);
+
   return (
     <ThemeProvider theme={themeMode ? dark_theme : light_theme}>
       <CssBaseline>
         <CookiesProvider>
           <Box>
             <BrowserRouter>
-              <Navbar updateThemeCookie={setCookies} />
-              <Box
-                component="main"
-                sx={{ mr: { md: "275px", xl: "0" } }}
-                mt="75px"
-              >
-                <Routes>
-                  <Route
-                    path="/"
-                    element={<Course courseInfo={courses[0]} />}
-                  />
-                  <Route path="/add" element={<AddCourse />} />
-                  <Route
-                    path="/dashboard"
-                    element={<Dashboard courses={courses} />}
-                  />
-                  {courses.map(
-                    (
-                      e //add routes for all courses
-                    ) => (
+              {loading ? (
+                <CustomSpinner style={undefined} />
+              ) : (
+                <Box>
+                  <Navbar updateThemeCookie={setCookies} />
+                  <Box
+                    component="main"
+                    sx={{ mr: { md: "275px", xl: "0" } }}
+                    mt="75px"
+                  >
+                    <Routes>
                       <Route
-                        path={e.code}
-                        element={<Course courseInfo={e} />}
+                        path="/"
+                        element={<Course courseInfo={courses[0]} />}
                       />
-                    )
-                  )}
-                </Routes>
-              </Box>
+                      <Route path="/add" element={<AddCourse />} />
+                      <Route
+                        path="/dashboard"
+                        element={<Dashboard courses={courses} />}
+                      />
+                      {courses.map(
+                        (
+                          e //add routes for all courses
+                        ) => (
+                          <Route
+                            path={e.code}
+                            element={<Course courseInfo={e} />}
+                          />
+                        )
+                      )}
+                    </Routes>
+                  </Box>
+                </Box>
+              )}
             </BrowserRouter>
           </Box>
         </CookiesProvider>

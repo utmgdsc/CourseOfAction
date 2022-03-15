@@ -87,7 +87,7 @@ function Assessments({ tableData, setTableData }: lstType) {
             tableData
               .map((data) => data.weight)
               .reduce((prev, next) => prev + next, 0) +
-              Number(e.target.value) >=
+              Number(e.target.value) >
             100,
         });
         break;

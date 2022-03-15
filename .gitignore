@@ -25,3 +25,5 @@ yarn-error.log*
 package-lock.json
 secret*
 __pycache__
+venv
+.idea

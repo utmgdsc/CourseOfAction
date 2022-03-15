@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, current } from "@reduxjs/toolkit";
 
 export interface Assessment {
   customReminder: string;
@@ -58,10 +58,11 @@ const coursesSlice = createSlice({
   name: "courses",
   initialState,
   reducers: {
-    addCourse(state, action) {},
+    addCourse(state, { payload }) {
+      state.currentCourses.push(payload);
+    },
     deleteCourse(state, action) {},
     setCourses(state, { payload }) {
-      console.log(1);
       return { ...state, currentCourses: Object.values(payload) };
     },
     addAssessment(state, { payload }) {

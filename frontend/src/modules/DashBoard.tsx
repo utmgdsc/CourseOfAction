@@ -18,6 +18,7 @@ import { useTheme } from "@mui/system";
 interface propTypes {
   courses: CourseInterface[];
 }
+
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
@@ -37,6 +38,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
   return null;
 };
+
 function Dashboard({ courses }: propTypes) {
   const theme = useTheme();
   //use this function to find percent left data for the completion chart

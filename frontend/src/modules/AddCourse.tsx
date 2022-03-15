@@ -10,12 +10,13 @@ import {
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import FileUploader from "../components/Syllabus";
-import { Assessment, CourseInterface } from "../store/courses";
+import { addCourse, Assessment, CourseInterface } from "../store/courses";
 import Assessments from "../components/Assessments";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import axios from "axios";
 import { apiURL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 function AddCourse() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -38,6 +39,7 @@ function AddCourse() {
   });
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setCourse({ ...course, assessments: assessments });
@@ -92,6 +94,7 @@ function AddCourse() {
     })
       .then((res) => {
         navigate("/");
+        dispatch(addCourse(course));
       })
       .catch((err) => {
         console.log(err);
