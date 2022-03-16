@@ -1,5 +1,8 @@
 import datetime
 import json
+import os
+import uuid
+import parser
 import pyrebase
 from flask import Flask, jsonify, make_response, request
 from flask_cors import CORS, cross_origin
@@ -12,9 +15,15 @@ auth = firebase.auth()
 # Authenticate Firebase tables
 db = firebase.database()
 
+
+def bad_request(mess: str):
+    return make_response(jsonify(message=mess), 400)
+
+
 @app.route("/")
 def hello():
     return "Hello, welcome to api endpoint for CourseOfAction!"
+
 
 @app.route('/api/get_courses', methods=["GET", "POST"])
 def get_courses():
@@ -50,6 +59,7 @@ def add_course():
     except:
         return make_response(jsonify(message='Error creating course'), 401)
 
+
 def parse_assessments(assessments):
     """ This helper function parses the assessment received from frontend to firebase acceptable format
     """
@@ -67,11 +77,34 @@ def parse_assessments(assessments):
         parsed[assessment.get(name, f"assessment{i}").replace(".", "").strip(',?!')] = cur
     return parsed
 
+
 def generate_reminders(familiarity, assessments):
     """TODO: create this function to handle add and update course api
     Use the familiarity scale to set reminder dates for each assessment
     """
     return assessments
+
+
+@app.route('/api/parse-assessments', methods=["POST"])
+def parse_assessment():
+    # get and save the file
+    if 'file' not in request.files:
+        return bad_request("Bad Request")
+    file = request.files['file']
+    if file.filename == '':
+        return bad_request("File not attached")
+    # create unique name for the file
+    filename = uuid.uuid4()
+    url = '/tmp' + os.sep + str(filename)
+    # save file
+    file.save(url)
+    # parse assessments
+    parsed_assessments = parser.extract_info(url)
+    os.remove(url)
+    # check if parsed correctly
+    if isinstance(parsed_assessments, int):
+        return bad_request("The syllabus format is not supported. Please enter your assessments manually.")
+    return { "assessments": parsed_assessments}
 
 
 if __name__ == "__main__":

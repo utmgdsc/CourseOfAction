@@ -32,8 +32,10 @@ def extract_info(filename):
                 isEnd = str(dfs[i].iloc[-1, 3]) == '100%' or str(dfs[i].iloc[-1, 3]) == 'nan'
                 if isEnd:
                     dfs[i].drop(dfs[1].tail(1).index, inplace=True)
-                # Renaming columns
+                # Renaming columns and adding the column as assessments
+                curr_columns = dfs[i].columns.copy()
                 dfs[i] = dfs[i].set_axis(["Type", "Description", "Due Date", weight_type], axis=1)
+                dfs[1].loc[len(dfs[i].index)] = curr_columns
                 df_combine = pd.concat([dfs[i], df_combine], axis=0, ignore_index=True)
                 # Breaking so we don't append any other table
                 if isEnd:
