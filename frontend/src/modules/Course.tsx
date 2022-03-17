@@ -91,7 +91,7 @@ function Course({ courseInfo }: propTypes) {
       percentScored += (mark / 100) * weight;
     });
     // Overall Percentages
-    const percentLeft = 100 - +currentWeight.toFixed(2);
+    const percentLeft = +(100 - +currentWeight.toFixed(2)).toFixed(2);
     let scoreRequired;
     if (percentLeft > 0)
       scoreRequired = +(
@@ -113,7 +113,7 @@ function Course({ courseInfo }: propTypes) {
     setCourse({
       ...course,
       scoreRequired,
-      currMark: percentScored,
+      currMark: +percentScored.toFixed(2),
       percentLeft: percentLeft,
     });
   };
