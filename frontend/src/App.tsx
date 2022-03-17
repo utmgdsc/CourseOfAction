@@ -36,7 +36,7 @@ function App() {
     setLoading(true);
     axios({
       method: "POST",
-      url: `${apiURL}/get_courses`,
+      url: `${apiURL}/get-courses`,
     })
       .then((res) => {
         setLoading(false);
@@ -54,7 +54,7 @@ function App() {
       <CssBaseline>
         <CookiesProvider>
           <Box>
-            <BrowserRouter>
+            <BrowserRouter basename="/coa/app">
               {loading ? (
                 <CustomSpinner style={undefined} />
               ) : (

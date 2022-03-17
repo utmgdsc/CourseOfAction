@@ -97,7 +97,7 @@ function Navbar({ updateThemeCookie }: propTypes) {
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
           <Box sx={{ display: "flex" }}>
-            <Avatar sx={{ mr: "5px" }} src="/grade.png" />
+            <Avatar sx={{ mr: "5px" }} src="/coa/app/grade.png" />
             <Typography
               fontWeight="bold"
               fontSize="30px"

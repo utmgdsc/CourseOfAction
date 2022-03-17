@@ -1,1 +1,1 @@
-export const apiURL: string = "http://127.0.0.1:5000/api";
+export const apiURL: string = "https://mcsapps.utm.utoronto.ca/coa/api";

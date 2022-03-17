@@ -42,6 +42,13 @@ function AddCourse() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    const mark = assessments.reduce(
+      (n, { mark, weight }) => n + (mark * weight) / 100,
+      0
+    );
+    if (mark >= 0 && mark < 110) {
+      course.currMark = +mark.toFixed(2);
+    }
     setCourse({ ...course, assessments: assessments });
   }, [assessments]);
 
@@ -81,14 +88,9 @@ function AddCourse() {
   };
 
   const handleSubmit = () => {
-    // Need to add this later
-    // const authToken = "";
-    const config = {
-      headers: { "Content-Type": "multipart/form-data" },
-    };
     axios({
       method: "POST",
-      url: `${apiURL}/add_course`,
+      url: `${apiURL}/add-course`,
       data: JSON.stringify(course),
       headers: { "Content-Type": "application/json" },
     })
