@@ -127,15 +127,8 @@ function AddCourse() {
 
   return (
     <Container>
-      <Typography variant="h1">Add Course</Typography>
-      <Typography variant="h2" my={2}>
-        Import Automatically
-      </Typography>
-      <Box>
-        <FileUploader />
-      </Box>
-      <Typography variant="h2" my={2}>
-        Input Manually
+      <Typography variant="h1" mb={2}>
+        Add Course
       </Typography>
       <Box mb={4}>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 3, md: 6 }}>
@@ -218,6 +211,12 @@ function AddCourse() {
             />
           </Grid>
         </Grid>
+        <Typography variant="h2" mx={3} my={2}>
+          Import Automatically
+        </Typography>
+        <Box mx={3} my={2}>
+          <FileUploader />
+        </Box>
         <Assessments tableData={assessments} setTableData={setAssessments} />
         <Box textAlign="center">
           <Button
