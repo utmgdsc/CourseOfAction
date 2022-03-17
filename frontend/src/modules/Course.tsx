@@ -91,14 +91,14 @@ function Course({ courseInfo }: propTypes) {
       percentScored += (mark / 100) * weight;
     });
     // Overall Percentages
-    const percentLeft = 100 - parseFloat(currentWeight.toFixed(2));
+    const percentLeft = 100 - +currentWeight.toFixed(2);
     let scoreRequired;
     if (percentLeft > 0)
-      scoreRequired = parseFloat(
-        ((desiredScore - percentScored) * (100 / percentLeft)).toFixed(2)
-      );
+      scoreRequired = +(
+        (desiredScore - percentScored) *
+        (100 / percentLeft)
+      ).toFixed(2);
     else scoreRequired = 0;
-
     return {
       percentLeft,
       scoreRequired,
@@ -141,12 +141,13 @@ function Course({ courseInfo }: propTypes) {
           />
           <Info
             title="Required Percent"
-            desc={course.expectedMark - course.currMark + "%"}
+            desc={+(course.expectedMark - course.currMark).toFixed(2) + "%"}
             color="primary.main"
             tooltip={
               <React.Fragment>
-                You need to score {course.expectedMark - course.currMark + "%"}{" "}
-                in the remaining {course.percentLeft}% course assessments to get{" "}
+                You need to score{" "}
+                {+(course.expectedMark - course.currMark).toFixed(2) + "%"} in
+                the remaining {course.percentLeft}% course assessments to get{" "}
                 {course.expectedMark}% in this course
               </React.Fragment>
             }
