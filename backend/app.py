@@ -1,6 +1,8 @@
 import datetime
 import json
 import pyrebase
+import uuid
+import parser
 import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
@@ -108,6 +110,33 @@ def generate_reminders(familiarity, assessments):
 def app_error(e):
     return make_response("Application error! Please try again later!"), 500
 
+def bad_request(mess: str):
+    return make_response(jsonify(message=mess), 400)
+
+@app.route('/api/parse-syllabus', methods=["POST"])
+@cross_origin()
+def parse_syllabus():
+    print("Hello")
+    # get and save the file
+    print(request.files)
+    if 'file' not in request.files:
+        return bad_request("Bad Request")
+    file = request.files['file']
+    if file.filename == '':
+        return bad_request("File not attached")
+    # create unique name for the file
+    filename = uuid.uuid4()
+    file_path = '/tmp' + os.sep + str(filename)
+    # save file
+    file.save(file_path)
+    # parse assessments
+    parsed_assessments = parser.extract_info(file_path)
+    os.remove(file_path)
+    # check if parsed correctly
+    if isinstance(parsed_assessments, int):
+        return bad_request("The syllabus format is not supported. Please enter your assessments manually.")
+    return { "assessments": parsed_assessments}
+
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8989)# for hot reload
+    app.run(debug=True, port=8989, ssl_context='adhoc') # for hot reload
