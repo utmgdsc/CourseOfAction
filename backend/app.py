@@ -35,7 +35,7 @@ def get_user(utorid):
 def index():
     # format_headers = lambda d: '\n'.join(k + ": " +v for k, v in d.items())
     # data = jsonify(data=(request.method, request.url, "\n\n"+format_headers(request.headers)))
-    user = get_user(request.headers.get("Utorid"))
+    user = get_user(request.headers["Utorid"])
     # redirect user to the app 
     response = make_response()
     response.headers['location'] = "/coa/app/" 
@@ -47,7 +47,7 @@ def send_app(path):
     """
     Serve static files for the frontend app
     """
-    user = get_user(request.headers.get("Utorid"))
+    user = get_user(request.headers["Utorid"])
     if path != "" and os.path.exists(app.static_folder + '/' + path):
         return send_from_directory(app.static_folder, path)
     else:
@@ -58,7 +58,7 @@ def get_courses():
     """
     Function to retrieve all courses for the student
     """
-    user = get_user(request.headers.get("Utorid"))
+    user = get_user(request.headers["Utorid"])
     return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
 
 @app.route('/coa/api/add-course', methods=["POST"])
@@ -67,7 +67,7 @@ def add_course():
     """
     Function to create a new course and add it for that specific user 
     """
-    user = get_user(request.headers.get("Utorid"))
+    user = get_user(request.headers["Utorid"])
     if not (request.json) or not(request.json.get('code', None)):
         return make_response(jsonify(message='Error missing required course information'), 400)
 
@@ -85,28 +85,6 @@ def add_course():
         return jsonify(messge="success")
     except:
         return make_response(jsonify(message='Error creating course'), 401)
-
-@app.route('/api/parse-assessments', methods=["POST"])
-def parse_assessment():
-    # get and save the file
-    if 'file' not in request.files:
-        return bad_request("Bad Request")
-    file = request.files['file']
-    if file.filename == '':
-        return bad_request("File not attached")
-    # create unique name for the file
-    filename = uuid.uuid4()
-    file_path = '/tmp' + os.sep + str(filename)
-    # save file
-    file.save(file_path)
-    # parse assessments
-    parsed_assessments = parser.extract_info(file_path)
-    os.remove(file_path)
-    # check if parsed correctly
-    if isinstance(parsed_assessments, int):
-        return bad_request("The syllabus format is not supported. Please enter your assessments manually.")
-    return { "assessments": parsed_assessments}
-
 
 def generate_reminders(familiarity, assessments):
     """TODO: create this function to handle add and update course api
@@ -147,4 +125,5 @@ def parse_syllabus():
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=8989, ssl_context='adhoc') # for hot reload
+    app.run(debug=True, port=8989) # for hot reload
+    
