@@ -102,9 +102,7 @@ def bad_request(mess: str):
 @app.route('/api/parse-syllabus', methods=["POST"])
 @cross_origin()
 def parse_syllabus():
-    print("Hello")
     # get and save the file
-    print(request.files)
     if 'file' not in request.files:
         return bad_request("Bad Request")
     file = request.files['file']
