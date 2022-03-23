@@ -1,10 +1,17 @@
 from tabula import read_pdf
 import pandas as pd
+import datetime
 
 # Edge Case (can be handled)
 # df = read_pdf("CSC301H5S.pdf", pages='all', multiple_tables=True, output_format='json')
 # print(df[0])
 
+def convert_str_to_date(date: str): 
+    try:
+        year, month, day = date.split("-")
+        return datetime.date(int(year), int(month), int(day))
+    except:
+        return None
 
 def extract_info(filename):
     try:
@@ -50,11 +57,27 @@ def extract_info(filename):
             weight = str(dfs[weight_type][i])
             is_nan = name == 'nan' or due_date == 'nan' or weight == 'nan'
             if name != "Total" and due_date != "Total" and weight != "100%" and not is_nan:
-                assessment = {
-                    'name': name,
-                    'due_date': due_date,
-                    'weight': int(weight[:-1])
-                }
+                if due_date == "On-going" or due_date == "TBA":
+                    assessment = {
+                        'name': name,
+                        'deadline': None,
+                        'weight': int(weight[:-1]),
+                        'mark': -1,
+                        'reminder': None,
+                        'isCompleted': False,
+                        'customReminder': None
+                    }
+                else:
+                    due_date = convert_str_to_date(due_date)
+                    assessment = {
+                        'name': name,
+                        'deadline': due_date,
+                        'weight': int(weight[:-1]),
+                        'mark': None,
+                        'reminder': due_date,
+                        'isCompleted': False,
+                        'customReminder': None
+                    }
                 assessments.append(assessment)
 
         # Managing same names by adding 2, 3, 4, etc. for same assessment name

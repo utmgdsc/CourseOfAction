@@ -12,7 +12,7 @@ function CustomSpinner({ style }: propTypes) {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100vh",
+        height: "100%",
         width: "100%",
       }}
     >

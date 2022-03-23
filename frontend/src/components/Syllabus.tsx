@@ -1,10 +1,14 @@
-import { Button } from "@mui/material";
+import { Box, Button, Stack } from "@mui/material";
 import React from "react";
+
 type State = {
   dragging: boolean;
-  file: File | null;
 };
-type Props = {};
+
+type Props = {
+  file: File | null;
+  setFile: Function;
+};
 
 class FileUploader extends React.Component<Props, State> {
   static counter = 0;
@@ -12,7 +16,7 @@ class FileUploader extends React.Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    this.state = { dragging: false, file: null };
+    this.state = { dragging: false };
   }
 
   dragEventCounter = 0;
@@ -39,7 +43,7 @@ class FileUploader extends React.Component<Props, State> {
     this.setState({ dragging: false });
 
     if (event.dataTransfer.files && event.dataTransfer.files[0]) {
-      this.setState({ file: event.dataTransfer.files[0] });
+      this.props.setFile(event.dataTransfer.files[0]);
     }
   };
 
@@ -54,7 +58,7 @@ class FileUploader extends React.Component<Props, State> {
 
   onFileChanged = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-      this.setState({ file: event.target.files[0] });
+      this.props.setFile(event.target.files[0]);
     }
   };
 
@@ -76,7 +80,7 @@ class FileUploader extends React.Component<Props, State> {
     return (
       <FileUploaderPresentationalComponent
         dragging={this.state.dragging}
-        file={this.state.file}
+        file={this.props.file}
         onSelectFileClick={this.onSelectFileClick}
         onDrag={this.overrideEventDefaults}
         onDragStart={this.overrideEventDefaults}
@@ -96,6 +100,7 @@ class FileUploader extends React.Component<Props, State> {
     );
   }
 }
+
 type PresentationalProps = {
   dragging: boolean;
   file: File | null;
@@ -153,4 +158,5 @@ export const FileUploaderPresentationalComponent: React.SFC<
     </div>
   );
 };
+
 export default FileUploader;

@@ -7,7 +7,7 @@ import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
 import os
-app = Flask(__name__, static_folder='build')
+app = Flask(__name__)
 cors = CORS(app)
 
 # Connect to Firebase Realtime DB
@@ -35,7 +35,7 @@ def get_user(utorid):
 def index():
     # format_headers = lambda d: '\n'.join(k + ": " +v for k, v in d.items())
     # data = jsonify(data=(request.method, request.url, "\n\n"+format_headers(request.headers)))
-    user = get_user(request.headers["Utorid"])
+    user = get_user(request.headers.get("Utorid"))
     # redirect user to the app 
     response = make_response()
     response.headers['location'] = "/coa/app/" 
@@ -47,7 +47,7 @@ def send_app(path):
     """
     Serve static files for the frontend app
     """
-    user = get_user(request.headers["Utorid"])
+    user = get_user(request.headers.get("Utorid"))
     if path != "" and os.path.exists(app.static_folder + '/' + path):
         return send_from_directory(app.static_folder, path)
     else:
@@ -58,7 +58,7 @@ def get_courses():
     """
     Function to retrieve all courses for the student
     """
-    user = get_user(request.headers["Utorid"])
+    user = get_user(request.headers.get("Utorid"))
     return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
 
 @app.route('/coa/api/add-course', methods=["POST"])
@@ -67,7 +67,7 @@ def add_course():
     """
     Function to create a new course and add it for that specific user 
     """
-    user = get_user(request.headers["Utorid"])
+    user = get_user(request.headers.get("Utorid"))
     if not (request.json) or not(request.json.get('code', None)):
         return make_response(jsonify(message='Error missing required course information'), 400)
 
@@ -99,7 +99,7 @@ def app_error(e):
 def bad_request(mess: str):
     return make_response(jsonify(message=mess), 400)
 
-@app.route('/api/parse-syllabus', methods=["POST"])
+@app.route('/coa/api/parse-syllabus', methods=["POST"])
 @cross_origin()
 def parse_syllabus():
     # get and save the file
@@ -119,7 +119,7 @@ def parse_syllabus():
     # check if parsed correctly
     if isinstance(parsed_assessments, int):
         return bad_request("The syllabus format is not supported. Please enter your assessments manually.")
-    return { "assessments": parsed_assessments}
+    return { "assessments": parsed_assessments }
 
 
 if __name__ == "__main__":

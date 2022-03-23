@@ -6,7 +6,9 @@ import {
   Slider,
   MenuItem,
   Button,
+  Stack,
   Grid,
+  Alert,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import FileUploader from "../components/Syllabus";
@@ -17,6 +19,7 @@ import axios from "axios";
 import { apiURL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import CustomSpinner from "../components/CustomSpinner";
 
 function AddCourse() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
@@ -36,7 +39,10 @@ function AddCourse() {
     expectedMark: false,
     offering: false,
     code: false,
+    parsing: false,
   });
+  const [file, setFile] = useState<null | File>(null);
+  const [spinner, setSpinner] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -127,6 +133,26 @@ function AddCourse() {
     return false;
   };
 
+  const getAssessment = () => {
+    if (file) {
+      let form = new FormData();
+      form.append("file", file, file.name);
+      const config = { headers: { "Content-Type": "multipart/form-data" } };
+      setFile(null);
+      setSpinner(true);
+      axios
+        .post(`${apiURL}/parse-syllabus`, form, config)
+        .then((res) => {
+          setSpinner(false);
+          setAssessments(res.data.assessments);
+        })
+        .catch(() => {
+          setSpinner(false);
+          setErrors({ ...errors, parsing: true });
+        });
+    }
+  };
+
   return (
     <Container>
       <Typography variant="h1" mb={2}>
@@ -156,6 +182,7 @@ function AddCourse() {
               name="name"
               value={course.name}
               onChange={handleChange}
+              sx={{ marginBottom: 2 }}
             />
             <Typography variant="h6">Familiarity</Typography>
             <Box mt={1.5}>
@@ -197,6 +224,7 @@ function AddCourse() {
               name="credit"
               value={course.credit}
               onChange={handleChange}
+              sx={{ marginBottom: 2 }}
             >
               <MenuItem value={0.5}>0.5</MenuItem>
               <MenuItem value={1}>1</MenuItem>
@@ -216,9 +244,43 @@ function AddCourse() {
         <Typography variant="h2" mx={3} my={2}>
           Import Automatically
         </Typography>
-        <Box mx={3} my={2}>
-          <FileUploader />
+        <Box
+          mx={3}
+          my={2}
+          py={2}
+          borderRadius="10px"
+          sx={{ border: "2px solid", borderColor: "primary.main" }}
+        >
+          <Stack spacing={2}>
+            {spinner ? (
+              <div className="file-uploader">
+                <CustomSpinner />
+              </div>
+            ) : (
+              <FileUploader file={file} setFile={setFile} />
+            )}
+            <Box alignSelf="center">
+              <Button
+                variant="contained"
+                sx={{ color: "white" }}
+                disabled={!file}
+                onClick={getAssessment}
+              >
+                Parse Syllabus
+              </Button>
+            </Box>
+          </Stack>
         </Box>
+
+        {errors.parsing ? (
+          <Alert
+            severity="error"
+            onClose={() => setErrors({ ...errors, parsing: false })}
+          >
+            This kind of syllabus is not supported by our parser. Please enter
+            assessments manually!
+          </Alert>
+        ) : null}
         <Assessments tableData={assessments} setTableData={setAssessments} />
         <Box textAlign="center">
           <Button

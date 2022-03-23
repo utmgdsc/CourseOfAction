@@ -56,7 +56,9 @@ function App() {
           <Box>
             <BrowserRouter basename="/coa/app">
               {loading ? (
-                <CustomSpinner style={undefined} />
+                <Box height="100vh">
+                  <CustomSpinner style={undefined} />
+                </Box>
               ) : (
                 <Box>
                   <Navbar updateThemeCookie={setCookies} />
