@@ -104,6 +104,7 @@ function Navbar({ updateThemeCookie }: propTypes) {
               color="primary.main"
               noWrap
               component="div"
+              display={["none", "block"]}
             >
               CourseOfAction
             </Typography>
