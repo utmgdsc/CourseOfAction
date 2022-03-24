@@ -74,7 +74,6 @@ def add_course():
     #make sure the course code is unique
     existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(request.json['code']).get().val()
     if existing_course:
-        print(existing_course)
         return make_response(jsonify(message='Error course already exists'), 403)
 
     try:
@@ -91,6 +90,25 @@ def generate_reminders(familiarity, assessments):
     Use the familiarity scale to set reminder dates for each assessment
     """
     return assessments
+
+@app.route('/coa/api/update-assessments', methods=["POST"])
+def update_assessment():
+    user = get_user(request.headers.get("Utorid"))
+    if not(request.json.get('code', None)) or not (request.json.get('assessments', None)):
+        return make_response(jsonify(message='Error missing required course information'), 400)
+    
+    req_code = request.json['code']
+    req_assessments = request.json['assessments']
+    existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(req_code).get().val()
+    if not existing_course:
+        return make_response(jsonify(message="Course you are trying to update doesn't exist"), 401)
+
+    try: 
+        db.child('users').child(user).child("courses").child(req_code).child("assessments").set(req_assessments)
+        return jsonify(message="success")
+    except:
+        return make_response(jsonify(message='Error updating assessments'), 401)
+
 
 @app.errorhandler(500)
 def app_error(e):

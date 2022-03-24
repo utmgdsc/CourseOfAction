@@ -12,18 +12,25 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
   TextField,
   Typography,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import moment from "moment";
 import { Assessment } from "../store/courses";
+import { ArrowFunction } from "typescript";
 
 interface lstType {
   tableData: Assessment[];
   setTableData: Dispatch<SetStateAction<Assessment[]>>;
+  save: {
+    function: Function; // function to call when enabled
+    disabled: boolean; // enable only when save function can work
+  } | null;
 }
 
-function Assessments({ tableData, setTableData }: lstType) {
+function Assessments({ tableData, setTableData, save }: lstType) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addAsssessmentInfo, setAddAsssessmentInfo] = useState({
     name: "",
@@ -117,6 +124,10 @@ function Assessments({ tableData, setTableData }: lstType) {
       editable: true,
       type: "number",
       flex: 0.5,
+      valueFormatter: (params: any) => {
+        if (params.value === -1 || params.value === null) return "-";
+        else return params.value;
+      },
     },
     {
       field: "deadline",
@@ -125,6 +136,11 @@ function Assessments({ tableData, setTableData }: lstType) {
       editable: true,
       flex: 1,
       type: "date",
+      valueFormatter: (params: any) => {
+        if (params.value && params.value !== "")
+          return moment(params.value).format("YYYY-MM-DD");
+        else return "";
+      },
     }, //, type: "date"
     {
       field: "customReminder",
@@ -133,8 +149,12 @@ function Assessments({ tableData, setTableData }: lstType) {
       inWidth: 200,
       flex: 1,
       type: "date",
+      valueFormatter: (params: any) => {
+        if (params.value && params.value !== "")
+          return moment(params.value).format("YYYY-MM-DD");
+        else return "";
+      },
     }, //, type: "date"
-
     {
       field: "actions",
       headerName: "Actions",
@@ -153,20 +173,38 @@ function Assessments({ tableData, setTableData }: lstType) {
   return (
     <Box>
       <Box
-        sx={{ display: "flex", justifyContent: "space-between", mb: "10px" }}
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-between",
+          marginBottom: "10px",
+        }}
         mx={3}
         my={2}
       >
         <Typography variant="h2">Assessments</Typography>
-        <Button
-          variant="contained"
-          color="primary"
-          size="medium"
-          sx={{ color: "white" }}
-          onClick={() => setIsAddOpen(true)}
-        >
-          Add Assessment
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="medium"
+            sx={{ color: "white" }}
+            onClick={() => setIsAddOpen(true)}
+          >
+            Add Assessment
+          </Button>
+          {save ? (
+            <Button
+              variant="outlined"
+              color="success"
+              size="medium"
+              onClick={() => save.function()}
+              disabled={save.disabled}
+            >
+              Save
+            </Button>
+          ) : null}
+        </Stack>
       </Box>
       <Box
         sx={{ backgroundColor: "highlight.main", borderRadius: 2 }}
@@ -290,5 +328,9 @@ function Assessments({ tableData, setTableData }: lstType) {
     </Box>
   );
 }
+
+Assessments.defaultProps = {
+  save: null,
+};
 
 export default Assessments;

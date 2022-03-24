@@ -28,30 +28,7 @@ interface Courses {
 }
 
 const initialState: Courses = {
-  currentCourses: [
-    {
-      assessments: [
-        {
-          name: "Assignment 1",
-          customReminder: "01/16/2022", // Need to be date, error in database
-          deadline: "01/22/2022", // Need to be date, error in database
-          isCompleted: true, // Need to be boolean, error in database
-          mark: 88,
-          reminder: "01/19/2022", // Need to be date, error in database
-          weight: 25,
-        },
-      ],
-      name: "This is a sample course",
-      credit: 0.5,
-      expectedMark: 80,
-      familiarity: 5,
-      offering: "W2022",
-      currMark: 80,
-      code: "CRS100H5",
-      scoreRequired: 80,
-      percentLeft: 0,
-    },
-  ],
+  currentCourses: [],
 };
 
 const coursesSlice = createSlice({
@@ -92,8 +69,8 @@ const coursesSlice = createSlice({
       ].assessments.findIndex((element) => element.name === assessmentName);
       state.currentCourses[courseIndex].assessments.splice(indexToDelete, 1);
     },
-    updateAssessment(state, { payload }) {
-      const { courseCode, assessment } = payload;
+    updateAssessments(state, { payload }) {
+      const { courseCode, assessments } = payload;
       const courseIndex = state.currentCourses.findIndex(
         (course) => course.code === courseCode
       );
@@ -102,7 +79,7 @@ const coursesSlice = createSlice({
         // Error handling
         return;
       }
-      state.currentCourses[courseIndex].assessments = payload;
+      state.currentCourses[courseIndex].assessments = assessments;
     },
   },
 });
@@ -113,6 +90,6 @@ export const {
   deleteAssessment,
   deleteCourse,
   addAssessment,
-  updateAssessment,
+  updateAssessments,
 } = coursesSlice.actions;
 export default coursesSlice.reducer;

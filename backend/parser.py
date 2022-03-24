@@ -62,7 +62,7 @@ def extract_info(filename):
                         'name': name,
                         'deadline': None,
                         'weight': int(weight[:-1]),
-                        'mark': -1,
+                        'mark': None,
                         'reminder': None,
                         'isCompleted': False,
                         'customReminder': None
@@ -76,7 +76,7 @@ def extract_info(filename):
                         'mark': None,
                         'reminder': due_date,
                         'isCompleted': False,
-                        'customReminder': None
+                        'customReminder': due_date
                     }
                 assessments.append(assessment)
 

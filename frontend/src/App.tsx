@@ -15,7 +15,7 @@ import { updateThemeMode } from "./store/theme";
 import Dashboard from "./modules/DashBoard";
 import axios from "axios";
 import { apiURL } from "./utils/constant";
-import { CourseInterface, setCourses } from "./store/courses";
+import { setCourses } from "./store/courses";
 import CustomSpinner from "./components/CustomSpinner";
 
 function App() {
@@ -35,7 +35,7 @@ function App() {
       dispatch(updateThemeMode({ darkMode: cookies["darkMode"] === "true" }));
     setLoading(true);
     axios({
-      method: "POST",
+      method: "GET",
       url: `${apiURL}/get-courses`,
     })
       .then((res) => {

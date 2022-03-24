@@ -1,10 +1,14 @@
-import { Container, Typography, Box, Stack } from "@mui/material";
+import { Container, Typography, Box, Stack, Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
-import { CourseInterface } from "../store/courses";
+import courses, { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
+import axios from "axios";
+import { useDispatch } from "react-redux";
 import { Tooltip as MUIToolTip } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { apiURL } from "../utils/constant";
+import { updateAssessments } from "../store/courses";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -62,13 +66,19 @@ const Info = ({ title, desc, color, tooltip }: InfoInterface) => {
 function Course({ courseInfo }: propTypes) {
   const [assessments, setAssessments] = useState(courseInfo.assessments);
   const [course, setCourse] = useState(courseInfo);
+  const [saveStatus, setSaveStatus] = useState({
+    error: false,
+    success: false,
+  });
+  const [loading, setLoading] = useState(false);
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // To update course state when rendering a new course
     setCourse(courseInfo);
     setAssessments(courseInfo.assessments);
-  }, [courseInfo]);
+  }, [courseInfo.code]);
 
   useEffect(() => {
     // To update tabledata on assessments change
@@ -84,11 +94,13 @@ function Course({ courseInfo }: propTypes) {
 
   const calculateGradeData = (desiredScore: number) => {
     let currentWeight: number = 0;
-    let percentScored = 0;
+    let percentScored: number = 0;
     assessments.forEach((assessment) => {
       const { mark, weight } = assessment;
-      currentWeight += weight;
-      percentScored += (mark / 100) * weight;
+      if (mark !== -1 && mark !== null) {
+        currentWeight += weight;
+        percentScored += (mark / 100) * weight;
+      }
     });
     // Overall Percentages
     const percentLeft = +(100 - +currentWeight.toFixed(2)).toFixed(2);
@@ -105,6 +117,35 @@ function Course({ courseInfo }: propTypes) {
       percentScored,
     };
   };
+
+  function saveAssessments() {
+    const data = {
+      assessments,
+      code: courseInfo.code,
+    };
+
+    setLoading(true);
+
+    axios
+      .post(`${apiURL}/update-assessments`, data)
+      .then(() => {
+        setLoading(false);
+        setSaveStatus({ ...saveStatus, success: true });
+        dispatch(
+          updateAssessments({ courseCode: courseInfo.code, assessments })
+        );
+        setCourse({ ...course, assessments });
+        setTimeout(
+          () => setSaveStatus({ ...saveStatus, success: false }),
+          5000
+        );
+      })
+      .catch(() => {
+        setLoading(true);
+        setSaveStatus({ ...saveStatus, error: true });
+        setTimeout(() => setSaveStatus({ ...saveStatus, error: false }), 5000);
+      });
+  }
 
   const updateCourse = () => {
     const { percentLeft, scoreRequired, percentScored } = calculateGradeData(
@@ -223,7 +264,33 @@ function Course({ courseInfo }: propTypes) {
           </Box>
         ) : null}
 
-        <Assessments tableData={assessments} setTableData={setAssessments} />
+        {saveStatus.error ? (
+          <Alert
+            severity="error"
+            onClose={() => setSaveStatus({ ...saveStatus, error: false })}
+          >
+            There was an error therefore we could not update your information
+            please try again!
+          </Alert>
+        ) : null}
+
+        {saveStatus.success ? (
+          <Alert
+            severity="success"
+            onClose={() => setSaveStatus({ ...saveStatus, success: false })}
+          >
+            The assessment information was updated
+          </Alert>
+        ) : null}
+
+        <Assessments
+          tableData={assessments}
+          setTableData={setAssessments}
+          save={{
+            function: saveAssessments,
+            disabled: assessments === course.assessments || loading,
+          }}
+        />
       </Box>
     </Container>
   );

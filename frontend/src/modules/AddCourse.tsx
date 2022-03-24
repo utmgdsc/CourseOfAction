@@ -281,11 +281,12 @@ function AddCourse() {
             assessments manually!
           </Alert>
         ) : null}
+
         <Assessments tableData={assessments} setTableData={setAssessments} />
         <Box textAlign="center">
           <Button
             variant="contained"
-            color="primary"
+            color="success"
             size="large"
             sx={{ color: "white" }}
             onClick={handleSubmit}
