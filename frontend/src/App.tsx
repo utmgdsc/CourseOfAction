@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import Course from "./modules/Course";
 import AddCourse from "./modules/AddCourse";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Box, CircularProgress } from "@mui/material";
 import Navbar from "./components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
@@ -68,10 +68,6 @@ function App() {
                     mt="75px"
                   >
                     <Routes>
-                      <Route
-                        path="/"
-                        element={<Course courseInfo={courses[0]} />}
-                      />
                       <Route path="/add" element={<AddCourse />} />
                       <Route
                         path="/dashboard"
@@ -87,6 +83,7 @@ function App() {
                           />
                         )
                       )}
+                      <Route path="*" element={<Navigate to="/dashboard" />} />
                     </Routes>
                   </Box>
                 </Box>

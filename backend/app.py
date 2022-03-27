@@ -1,4 +1,3 @@
-import datetime
 import json
 import pyrebase
 import uuid
@@ -7,7 +6,7 @@ import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
 import os
-app = Flask(__name__)
+app = Flask(__name__) #, static_folder="build" for prod
 cors = CORS(app)
 
 # Connect to Firebase Realtime DB
@@ -17,7 +16,11 @@ auth = firebase.auth()
 db = firebase.database()
 
 def get_user(utorid):
-    if not utorid and app.debug: # for local dev we set it to a defined user
+    """
+    Check the HTTP headers for user's utorid and return the hash for each user
+    This will create a user profile in Firebase for first time use
+    """
+    if not utorid and app.debug: # for local dev we set it to a defined test user
         user = "UuT5Mb7uJKO8N6mTTv9LuyCexgl1"
     else:
         user = hashlib.sha256(utorid.encode("utf-8")).hexdigest()
@@ -35,7 +38,8 @@ def get_user(utorid):
 def index():
     # format_headers = lambda d: '\n'.join(k + ": " +v for k, v in d.items())
     # data = jsonify(data=(request.method, request.url, "\n\n"+format_headers(request.headers)))
-    user = get_user(request.headers.get("Utorid"))
+    # code above will print all request header for future additions + security 
+    
     # redirect user to the app 
     response = make_response()
     response.headers['location'] = "/coa/app/" 
