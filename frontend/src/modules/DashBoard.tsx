@@ -41,7 +41,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 function Dashboard({ courses }: propTypes) {
   const theme = useTheme();
-  if (courses.length == 0) {
+  if (courses.length === 0) {
     return (
       <Container>
         <Typography variant="h1" color="primary.main">
@@ -117,8 +117,12 @@ function Dashboard({ courses }: propTypes) {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey={"currMark"} fill={COLORS[0]} />
-              <Bar dataKey={"expectedMark"} fill={COLORS[1]} />
+              <Bar dataKey={"currMark"} fill={COLORS[0]} name="Current Mark" />
+              <Bar
+                dataKey={"expectedMark"}
+                fill={COLORS[1]}
+                name="Expected Mark"
+              />
             </BarChart>
           </ResponsiveContainer>
         </Grid>

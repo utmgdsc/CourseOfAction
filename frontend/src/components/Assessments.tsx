@@ -19,7 +19,6 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import moment from "moment";
 import { Assessment } from "../store/courses";
-import { ArrowFunction } from "typescript";
 
 interface lstType {
   tableData: Assessment[];
@@ -51,17 +50,6 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
     (id) => () => {
       setTimeout(() => {
         setTableData((tableData) => tableData.filter((row) => row.name !== id));
-      });
-    },
-    []
-  );
-
-  const updateAssessments = React.useCallback(
-    (id) => () => {
-      // TODO: fix this to update state variables
-      setTimeout(() => {
-        console.log(id);
-        setTableData([...tableData]);
       });
     },
     []
@@ -218,21 +206,22 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
         <div style={{ display: "flex" }}>
           <div style={{ flex: 1 }}>
             <DataGrid
-              getRowId={(row) => row.name}
+              getRowId={(row) => course + "-" + row.name}
               rows={tableData}
               columns={columns}
               autoHeight
               onCellEditCommit={(params: GridCellEditCommitParams) => {
-                const changedRow =
-                  tableData[
-                    tableData.findIndex((element) => element.name === params.id)
-                  ];
-                setTableData([
-                  ...tableData.filter((row) => row.name !== params.id),
-                  { ...changedRow, [params.field]: params.value },
-                ]);
+                setTimeout(() => {
+                  const index = tableData.findIndex(
+                    (element) => element.name === params.id
+                  );
+                  if (index === -1) return;
+                  setTableData([
+                    ...tableData.filter((row) => row.name !== params.id),
+                    { ...tableData[index], [params.field]: params.value },
+                  ]);
+                });
               }}
-              aria-label={course}
             />
           </div>
         </div>

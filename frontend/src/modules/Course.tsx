@@ -1,7 +1,7 @@
 import { Container, Typography, Box, Stack, Alert } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
-import courses, { CourseInterface } from "../store/courses";
+import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -78,21 +78,10 @@ function Course({ courseInfo }: propTypes) {
     // To update course state when rendering a new course
     setCourse(courseInfo);
     setAssessments(courseInfo.assessments);
-  }, [courseInfo.code]);
+  }, [courseInfo]);
 
   useEffect(() => {
-    // To update tabledata on assessments change
-    updateCourse();
-  }, [assessments]);
-
-  const data = [
-    { name: "Completed", value: +(100 - course.percentLeft).toFixed(2) },
-    { name: "Left", value: course.percentLeft },
-  ];
-
-  const COLORS = ["#00C49F", theme.palette.primary.main];
-
-  const calculateGradeData = (desiredScore: number) => {
+    // calculate grade data on assignment table change
     let currentWeight: number = 0;
     let percentScored: number = 0;
     assessments.forEach((assessment) => {
@@ -106,19 +95,29 @@ function Course({ courseInfo }: propTypes) {
     currentWeight = +currentWeight.toFixed(2);
     percentScored = +percentScored.toFixed(2);
     const percentLeft = +(100 - currentWeight).toFixed(2);
-    let scoreRequired;
+    let scoreRequired: number;
     if (percentLeft > 0)
       scoreRequired = +(
-        (desiredScore - percentScored) *
+        (course.expectedMark - percentScored) *
         (100 / percentLeft)
       ).toFixed(2);
     else scoreRequired = 0;
-    return {
-      percentLeft,
-      scoreRequired,
-      percentScored,
-    };
-  };
+
+    // Update course on assessments change
+    setCourse((course) => ({
+      ...course,
+      scoreRequired: scoreRequired,
+      currMark: +percentScored.toFixed(2),
+      percentLeft: percentLeft,
+    }));
+  }, [assessments, course.expectedMark]);
+
+  const data = [
+    { name: "Completed", value: +(100 - course.percentLeft).toFixed(2) },
+    { name: "Left", value: course.percentLeft },
+  ];
+
+  const COLORS = ["#00C49F", theme.palette.primary.main];
 
   function saveAssessments() {
     const data = {
@@ -148,18 +147,6 @@ function Course({ courseInfo }: propTypes) {
         setTimeout(() => setSaveStatus({ ...saveStatus, error: false }), 5000);
       });
   }
-
-  const updateCourse = () => {
-    const { percentLeft, scoreRequired, percentScored } = calculateGradeData(
-      course.expectedMark
-    );
-    setCourse({
-      ...course,
-      scoreRequired,
-      currMark: +percentScored.toFixed(2),
-      percentLeft: percentLeft,
-    });
-  };
 
   return (
     <Container>
@@ -245,9 +232,9 @@ function Course({ courseInfo }: propTypes) {
             </Typography>
             <Typography variant="subtitle1">
               Technically you have achieved the your goal grade you can skip the
-              other assignments (if any left), however please check if the
-              syllabus you may still have to complete other assignments to pass
-              the course!
+              other assignments (if any left), however please check the syllabus
+              as you may still have to complete other assignments to pass the
+              course!
             </Typography>
           </Box>
         ) : null}
@@ -260,7 +247,7 @@ function Course({ courseInfo }: propTypes) {
             <Typography variant="subtitle1">
               To achieve this grade you need to get a grade of{" "}
               {`${course.scoreRequired}`}% in the remaining
-              {` ${course.percentLeft}`}% of the course, which is impossible.
+              {` ${course.percentLeft}`}% of the course, which is impossible!
               Try changing your goal to something more realistic.
             </Typography>
           </Box>
