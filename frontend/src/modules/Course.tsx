@@ -292,6 +292,7 @@ function Course({ courseInfo }: propTypes) {
             function: saveAssessments,
             disabled: assessments === course.assessments || loading,
           }}
+          course={course.name}
         />
       </Box>
     </Container>

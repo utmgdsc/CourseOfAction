@@ -28,9 +28,10 @@ interface lstType {
     function: Function; // function to call when enabled
     disabled: boolean; // enable only when save function can work
   } | null;
+  course: string;
 }
 
-function Assessments({ tableData, setTableData, save }: lstType) {
+function Assessments({ tableData, setTableData, save, course }: lstType) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [addAsssessmentInfo, setAddAsssessmentInfo] = useState({
     name: "",
@@ -231,6 +232,7 @@ function Assessments({ tableData, setTableData, save }: lstType) {
                   { ...changedRow, [params.field]: params.value },
                 ]);
               }}
+              aria-label={course}
             />
           </div>
         </div>
