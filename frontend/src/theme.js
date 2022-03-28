@@ -36,6 +36,7 @@ const dark_theme = createTheme({
     },
     navBackgorund: {
       main: "#484848",
+      secondary: "#48484890",
     },
     highlight: {
       main: "#2E2E33",
@@ -106,6 +107,7 @@ const light_theme = createTheme({
     },
     navBackgorund: {
       main: "#D3D3D3",
+      secondary: "#D3D3D390",
     },
     highlight: {
       main: "#D3D3D3",

@@ -1,7 +1,14 @@
-import { Container, Typography, Box, Stack, Alert } from "@mui/material";
+import {
+  Container,
+  Typography,
+  Box,
+  Stack,
+  Alert,
+  TextField,
+} from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
-import courses, { CourseInterface } from "../store/courses";
+import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
 import axios from "axios";
 import { useDispatch } from "react-redux";
@@ -43,7 +50,11 @@ interface InfoInterface {
 
 const Info = ({ title, desc, color, tooltip }: InfoInterface) => {
   const stack = (
-    <Stack alignItems={{ xs: "center", lg: "left" }} mb={{ xs: 2, lg: 0 }}>
+    <Stack
+      alignItems={{ xs: "center", lg: "left" }}
+      mt={{ xs: 0, lg: 2 }}
+      mb={{ xs: 2, lg: 0 }}
+    >
       <Typography variant="h2" color={color}>
         {title}
       </Typography>
@@ -71,6 +82,7 @@ function Course({ courseInfo }: propTypes) {
     success: false,
   });
   const [loading, setLoading] = useState(false);
+  const [edit, setEdit] = useState(false);
   const theme = useTheme();
   const dispatch = useDispatch();
 
@@ -119,8 +131,12 @@ function Course({ courseInfo }: propTypes) {
   };
 
   function saveAssessments() {
+    const assessments_temp = assessments.map((assessment) => {
+      if (assessment.mark === null) return { ...assessment, mark: -1 };
+      return assessment;
+    });
     const data = {
-      assessments,
+      assessments: assessments_temp,
       code: courseInfo.code,
     };
 
@@ -162,12 +178,33 @@ function Course({ courseInfo }: propTypes) {
   return (
     <Container>
       <Box my={5}>
-        <Typography variant="h1">{courseInfo.code}</Typography>
+        <Typography variant="h1">{course.code}</Typography>
+        <Box
+          width="full"
+          display="flex"
+          alignItems="center"
+          justifyContent="flex-end"
+        >
+          <Typography variant="body1">Expected Grade</Typography>
+          <TextField
+            variant="outlined"
+            value={course.expectedMark}
+            sx={{ marginLeft: "10px" }}
+          />
+        </Box>
         <Stack
           direction={{ xs: "column", lg: "row" }}
-          sx={{ direction: "column" }}
+          sx={{
+            alignItems: { xs: "", lg: "center" },
+            direction: "column",
+            backgroundColor: "navBackgorund.secondary",
+            borderRadius: 4,
+          }}
+          position="relative"
           justifyContent="space-between"
           mt="20px"
+          mb="10px"
+          p={4}
         >
           <Info
             title="Current Percent"
@@ -194,14 +231,14 @@ function Course({ courseInfo }: propTypes) {
             }
           />
           <Info
-            title="Required Mark"
+            title="Required Avg"
             desc={course.scoreRequired + "%"}
             color="primary.main"
             tooltip={
               <React.Fragment>
-                You need to score {course.scoreRequired + "%"} in each
-                assessment from now on to end up with your desired mark in this
-                course which is {course.expectedMark}%
+                You need to score an averge of {course.scoreRequired + "%"} in
+                each assessment from now on to end up with your desired mark in
+                this course which is {course.expectedMark}%
               </React.Fragment>
             }
           />
