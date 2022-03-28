@@ -98,7 +98,7 @@ function Course({ courseInfo }: propTypes) {
   }, [assessments]);
 
   const data = [
-    { name: "Completed", value: 100 - course.percentLeft },
+    { name: "Completed", value: +(100 - course.percentLeft).toFixed(2) },
     { name: "Left", value: course.percentLeft },
   ];
 
@@ -115,7 +115,9 @@ function Course({ courseInfo }: propTypes) {
       }
     });
     // Overall Percentages
-    const percentLeft = +(100 - +currentWeight.toFixed(2)).toFixed(2);
+    currentWeight = +currentWeight.toFixed(2);
+    percentScored = +percentScored.toFixed(2);
+    const percentLeft = +(100 - currentWeight).toFixed(2);
     let scoreRequired;
     if (percentLeft > 0)
       scoreRequired = +(
@@ -327,6 +329,7 @@ function Course({ courseInfo }: propTypes) {
             function: saveAssessments,
             disabled: assessments === course.assessments || loading,
           }}
+          course={course.name}
         />
       </Box>
     </Container>

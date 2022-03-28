@@ -41,21 +41,39 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 function Dashboard({ courses }: propTypes) {
   const theme = useTheme();
+  if (courses.length == 0) {
+    return (
+      <Container>
+        <Typography variant="h1" color="primary.main">
+          Dashboard
+        </Typography>
+        <br></br>
+        <Typography variant="h6" color="primary.secondary">
+          Click "Add Courses" to update your semester so you can see cool
+          visuals regarding your progress.
+        </Typography>
+      </Container>
+    );
+  }
   //use this function to find percent left data for the completion chart
   const calculateGradeData = () => {
     let currentWeight: number = 0;
     let percentLeft: number = 100 * courses.length;
-    let totalCourse: number = 0;
     courses.forEach((course) => {
       course.assessments.forEach((assessment) => {
         const { weight } = assessment;
         currentWeight += weight;
-        totalCourse += 1;
       });
     });
     return [
-      { name: "Completed", value: currentWeight / 3 },
-      { name: "Left", value: (percentLeft - currentWeight) / 3 },
+      {
+        name: "Completed",
+        value: +(currentWeight / courses.length).toFixed(2),
+      },
+      {
+        name: "Left",
+        value: +((percentLeft - currentWeight) / courses.length).toFixed(2),
+      },
     ];
   };
   let data = calculateGradeData();

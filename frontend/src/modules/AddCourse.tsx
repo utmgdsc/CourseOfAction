@@ -282,7 +282,11 @@ function AddCourse() {
           </Alert>
         ) : null}
 
-        <Assessments tableData={assessments} setTableData={setAssessments} />
+        <Assessments
+          tableData={assessments}
+          setTableData={setAssessments}
+          course="New Course"
+        />
         <Box textAlign="center">
           <Button
             variant="contained"
