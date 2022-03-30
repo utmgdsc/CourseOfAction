@@ -14,7 +14,9 @@ import React, { useEffect, useState } from "react";
 import FileUploader from "../components/Syllabus";
 import { addCourse, Assessment, CourseInterface } from "../store/courses";
 import Assessments from "../components/Assessments";
+import { Tooltip as MUIToolTip } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import InfoIcon from "@mui/icons-material/Info";
 import axios from "axios";
 import { apiURL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
@@ -184,7 +186,14 @@ function AddCourse() {
               onChange={handleChange}
               sx={{ marginBottom: 2 }}
             />
-            <Typography variant="h6">Familiarity</Typography>
+            <Box display="flex" alignItems="center">
+              <Typography variant="h6" mr={1}>
+                Familiarity
+              </Typography>
+              <MUIToolTip title="Familiarity is used to determine the number of reminders you'll get. 5 indicates highest familiarity, getting 1 reminder on the reminder day, while 1 indicates lowest familiarity getting 5 reminders with 2-day intervals.">
+                <InfoIcon />
+              </MUIToolTip>
+            </Box>
             <Box mt={1.5}>
               <Slider
                 aria-label="Small steps"
@@ -192,7 +201,7 @@ function AddCourse() {
                 step={1}
                 marks
                 min={0}
-                max={10}
+                max={5}
                 valueLabelDisplay="auto"
                 value={course.familiarity}
                 name="familiarity"

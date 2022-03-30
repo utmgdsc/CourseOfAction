@@ -128,8 +128,8 @@ function Dashboard({ courses }: propTypes) {
         </Grid>
         <Grid item xs={12} lg={6}>
           <Box
-            style={{
-              backgroundColor: "#595959",
+            sx={{
+              backgroundColor: "navBackgorund.secondary",
               borderRadius: "18px",
             }}
             p={3}

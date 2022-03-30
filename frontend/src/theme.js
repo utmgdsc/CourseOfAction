@@ -41,6 +41,9 @@ const dark_theme = createTheme({
     highlight: {
       main: "#2E2E33",
     },
+    common: {
+      box: "#D3D3D3",
+    },
   },
   typography: {
     h1: {
@@ -111,6 +114,9 @@ const light_theme = createTheme({
     },
     highlight: {
       main: "#D3D3D3",
+    },
+    common: {
+      box: "#D3D3D3",
     },
   },
   typography: {

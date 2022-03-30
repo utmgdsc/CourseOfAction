@@ -24,7 +24,6 @@ function App() {
   );
   const themeMode = useSelector((store: RootState) => store.theme.darkMode);
   const dispatch = useDispatch();
-
   const [cookies, setCookies] = useCookies(["darkMode"]);
   const [loading, setLoading] = useState(true);
 

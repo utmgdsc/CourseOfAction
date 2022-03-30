@@ -213,7 +213,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
               onCellEditCommit={(params: GridCellEditCommitParams) => {
                 setTimeout(() => {
                   const index = tableData.findIndex(
-                    (element) => element.name === params.id
+                    (element) => course + "-" + element.name === params.id
                   );
                   if (index === -1) return;
                   setTableData([

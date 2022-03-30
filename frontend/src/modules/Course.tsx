@@ -5,11 +5,15 @@ import {
   Stack,
   Alert,
   TextField,
+  Slider,
+  Grid,
+  Button,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
 import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
+import InfoIcon from "@mui/icons-material/Info";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { Tooltip as MUIToolTip } from "@mui/material";
@@ -82,9 +86,11 @@ function Course({ courseInfo }: propTypes) {
     success: false,
   });
   const [loading, setLoading] = useState(false);
-  const [edit, setEdit] = useState(false);
   const theme = useTheme();
   const dispatch = useDispatch();
+  const updatedCourseInfo =
+    course.expectedMark !== courseInfo.expectedMark ||
+    course.familiarity !== courseInfo.familiarity;
 
   useEffect(() => {
     // To update course state when rendering a new course
@@ -164,23 +170,81 @@ function Course({ courseInfo }: propTypes) {
       });
   }
 
+  const handleChange = (e: any) => {
+    const { value, name }: { name: string; value: any } = e.target;
+    const newState = course;
+
+    switch (name) {
+      case "expectedMark":
+        let v = value;
+        if (value > 100) v = 100;
+        if (value < 0) v = 0;
+        newState[name] = v;
+        break;
+      case "familiarity":
+        newState[name] = value;
+        break;
+      default:
+        console.log("Name does not exist.");
+    }
+    setCourse({ ...course, ...newState });
+  };
+
+  const saveCourseInfo = () => {};
+
   return (
     <Container>
       <Box my={5}>
         <Typography variant="h1">{course.code}</Typography>
-        <Box
-          width="full"
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-end"
-        >
-          <Typography variant="body1">Expected Grade</Typography>
-          <TextField
+        <Box display="flex" justifyContent="flex-end">
+          <Button
             variant="outlined"
-            value={course.expectedMark}
-            sx={{ marginLeft: "10px" }}
-          />
+            color="success"
+            size="medium"
+            disabled={!updatedCourseInfo}
+            onClick={saveCourseInfo}
+          >
+            Save
+          </Button>
         </Box>
+        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 3, md: 6 }}>
+          <Grid container item xs={12} md={6} direction="column">
+            <Box display="flex" alignItems="center">
+              <Typography variant="h6" mr={1}>
+                Familiarity
+              </Typography>
+              <MUIToolTip title="Familiarity is used to determine the number of reminders you'll get. 5 indicates highest familiarity, getting 1 reminder on the reminder day, while 1 indicates lowest familiarity getting 5 reminders with 2-day intervals.">
+                <InfoIcon />
+              </MUIToolTip>
+            </Box>
+            <Box mt={1.5}>
+              <Slider
+                aria-label="Small steps"
+                defaultValue={5}
+                step={1}
+                marks
+                min={1}
+                max={5}
+                valueLabelDisplay="auto"
+                value={course.familiarity}
+                name="familiarity"
+                onChange={handleChange}
+              />
+            </Box>
+          </Grid>
+          <Grid container item xs={12} md={6} direction="column">
+            <Typography variant="body1">Expected Grade</Typography>
+            <TextField
+              variant="outlined"
+              type="number"
+              name="expectedMark"
+              value={course.expectedMark}
+              onChange={handleChange}
+              sx={{ marginLeft: "10px" }}
+            />
+          </Grid>
+        </Grid>
+
         <Stack
           direction={{ xs: "column", lg: "row" }}
           sx={{
