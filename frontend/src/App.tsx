@@ -3,7 +3,7 @@ import "./App.css";
 import Course from "./modules/Course";
 import AddCourse from "./modules/AddCourse";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { Box, CircularProgress } from "@mui/material";
+import { Box } from "@mui/material";
 import Navbar from "./components/Navbar";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "./store/index";
@@ -56,7 +56,7 @@ function App() {
             <BrowserRouter basename="/coa/app">
               {loading ? (
                 <Box height="100vh">
-                  <CustomSpinner style={undefined} />
+                  <CustomSpinner />
                 </Box>
               ) : (
                 <Box>

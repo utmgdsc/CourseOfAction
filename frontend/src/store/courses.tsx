@@ -38,7 +38,6 @@ const coursesSlice = createSlice({
     addCourse(state, { payload }) {
       state.currentCourses.push(payload);
     },
-    deleteCourse(state, action) {},
     setCourses(state, { payload }) {
       return { ...state, currentCourses: Object.values(payload) };
     },
@@ -81,6 +80,19 @@ const coursesSlice = createSlice({
       }
       state.currentCourses[courseIndex].assessments = assessments;
     },
+    updateCourse(state, { payload }) {
+      const { code, familiarity, expectedMark } = payload;
+      const courseIndex = state.currentCourses.findIndex(
+        (course) => course.code === code
+      );
+
+      if (courseIndex === -1) {
+        // Error handling
+        return;
+      }
+      state.currentCourses[courseIndex].expectedMark = expectedMark;
+      state.currentCourses[courseIndex].familiarity = familiarity;
+    },
   },
 });
 
@@ -88,8 +100,8 @@ export const {
   addCourse,
   setCourses,
   deleteAssessment,
-  deleteCourse,
   addAssessment,
   updateAssessments,
+  updateCourse,
 } = coursesSlice.actions;
 export default coursesSlice.reducer;

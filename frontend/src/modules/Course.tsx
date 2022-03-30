@@ -19,7 +19,7 @@ import { useDispatch } from "react-redux";
 import { Tooltip as MUIToolTip } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { apiURL } from "../utils/constant";
-import { updateAssessments } from "../store/courses";
+import { updateAssessments, updateCourse } from "../store/courses";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -85,6 +85,10 @@ function Course({ courseInfo }: propTypes) {
     error: false,
     success: false,
   });
+  const [saveCourseInfoStatus, setSaveCourseInfoStatus] = useState({
+    error: false,
+    success: false,
+  });
   const [loading, setLoading] = useState(false);
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -128,7 +132,7 @@ function Course({ courseInfo }: propTypes) {
       currMark: +percentScored.toFixed(2),
       percentLeft: percentLeft,
     }));
-  }, [assessments, course.expectedMark]);
+  }, [assessments, course.expectedMark, courseInfo]);
 
   const data = [
     { name: "Completed", value: +(100 - course.percentLeft).toFixed(2) },
@@ -190,12 +194,64 @@ function Course({ courseInfo }: propTypes) {
     setCourse({ ...course, ...newState });
   };
 
-  const saveCourseInfo = () => {};
+  const saveCourseInfo = () => {
+    const data = {
+      expectedMark: course.expectedMark,
+      familiarity: course.familiarity,
+      code: courseInfo.code,
+    };
+    axios
+      .patch(`${apiURL}/update-course`, data)
+      .then(() => {
+        setSaveCourseInfoStatus({ ...saveCourseInfoStatus, success: true });
+        dispatch(updateCourse(data));
+        setCourse({ ...course, ...data });
+        setTimeout(
+          () =>
+            setSaveCourseInfoStatus({
+              ...saveCourseInfoStatus,
+              success: false,
+            }),
+          5000
+        );
+      })
+      .catch((e) => {
+        console.log(e);
+        setSaveCourseInfoStatus({ ...saveCourseInfoStatus, error: true });
+        setTimeout(
+          () =>
+            setSaveCourseInfoStatus({ ...saveCourseInfoStatus, error: false }),
+          5000
+        );
+      });
+  };
 
   return (
     <Container>
       <Box my={5}>
         <Typography variant="h1">{course.code}</Typography>
+        {saveCourseInfoStatus.error ? (
+          <Alert
+            severity="error"
+            onClose={() =>
+              setSaveStatus({ ...saveCourseInfoStatus, error: false })
+            }
+          >
+            There was an error therefore we could not update your information
+            please try again!
+          </Alert>
+        ) : null}
+
+        {saveCourseInfoStatus.success ? (
+          <Alert
+            severity="success"
+            onClose={() =>
+              setSaveStatus({ ...saveCourseInfoStatus, success: false })
+            }
+          >
+            The course information was updated!
+          </Alert>
+        ) : null}
         <Box display="flex" justifyContent="flex-end">
           <Button
             variant="outlined"

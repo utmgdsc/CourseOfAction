@@ -1,4 +1,4 @@
-import { createTheme } from "@mui/material/styles";
+import { createTheme, responsiveFontSizes } from "@mui/material/styles";
 
 const dark_theme = createTheme({
   breakpoints: {
@@ -47,7 +47,7 @@ const dark_theme = createTheme({
   },
   typography: {
     h1: {
-      fontSize: 72,
+      fontSize: 50,
       fontWeight: 900,
     },
     h2: {
@@ -121,7 +121,7 @@ const light_theme = createTheme({
   },
   typography: {
     h1: {
-      fontSize: 72,
+      fontSize: 50,
       fontWeight: 900,
     },
     h2: {

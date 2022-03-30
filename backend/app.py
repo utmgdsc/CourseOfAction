@@ -97,18 +97,51 @@ def generate_reminders(familiarity, assessments):
 
 @app.route('/coa/api/update-assessments', methods=["POST"])
 def update_assessment():
+    """
+    This function updates the assessments for each a specific user
+    """
+    # getting user from request
     user = get_user(request.headers.get("Utorid"))
+    # checking request has everything needed
     if not(request.json.get('code', None)) or not (request.json.get('assessments', None)):
         return make_response(jsonify(message='Error missing required course information'), 400)
     
     req_code = request.json['code']
     req_assessments = request.json['assessments']
     existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(req_code).get().val()
+    # checking if the course exists
     if not existing_course:
         return make_response(jsonify(message="Course you are trying to update doesn't exist"), 401)
 
     try: 
+        # setting assessment info in the database
         db.child('users').child(user).child("courses").child(req_code).child("assessments").set(req_assessments)
+        return jsonify(message="success")
+    except:
+        return make_response(jsonify(message='Error updating assessments'), 401)
+
+@app.route('/coa/api/update-course', methods=["PATCH"])
+def update_course():
+    """
+    This function updates the course's expected mark and familiarity
+    """
+    # getting user from request
+    user = get_user(request.headers.get("Utorid"))
+    # checking request has everything needed
+    if not request.json.get('expectedMark', None) or not request.json.get('familiarity', None) or not request.json.get('code', None):
+        return make_response(jsonify(message='Error missing required course information'), 400)
+    
+    req_code = request.json['code']
+    req_expectedMark = request.json['expectedMark']
+    req_familiarity = request.json['familiarity']
+    existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(req_code).get().val()
+    # checking if the course exists
+    if not existing_course:
+        return make_response(jsonify(message="Course you are trying to update doesn't exist"), 401)
+    
+    try: 
+        # setting assessment info in the database
+        db.child('users').child(user).child("courses").child(req_code).update({"familiarity": req_familiarity, "expectedMark": req_expectedMark})
         return jsonify(message="success")
     except:
         return make_response(jsonify(message='Error updating assessments'), 401)
