@@ -1,25 +1,19 @@
-import { createSlice, current } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 
 export interface Assessment {
-  customReminder: string;
-  deadline: string;
-  isCompleted: boolean;
-  mark: number;
   reminder: string;
+  deadline: string;
+  mark: number;
   weight: number;
   name: string;
 }
 
 export interface CourseInterface {
   code: string;
-  name: string;
-  credit: number;
   expectedMark: number;
   familiarity: number;
   offering: string;
   currMark: number; // calculated
-  scoreRequired: number;
-  percentLeft: number;
   assessments: Assessment[];
 }
 
@@ -41,37 +35,10 @@ const coursesSlice = createSlice({
     setCourses(state, { payload }) {
       return { ...state, currentCourses: Object.values(payload) };
     },
-    addAssessment(state, { payload }) {
-      const { courseCode, assessment } = payload;
-      const courseIndex = state.currentCourses.findIndex(
-        (course) => course.code === courseCode
-      );
-      if (courseIndex === -1) {
-        // Error handling
-        return;
-      }
-      state.currentCourses[courseIndex].assessments.push(assessment);
-    },
-    deleteAssessment(state, { payload }) {
-      const { courseCode, assessmentName } = payload;
-
-      const courseIndex = state.currentCourses.findIndex(
-        (course) => course.code === courseCode
-      );
-
-      if (courseIndex === -1) {
-        // Error handling
-        return;
-      }
-      const indexToDelete = state.currentCourses[
-        courseIndex
-      ].assessments.findIndex((element) => element.name === assessmentName);
-      state.currentCourses[courseIndex].assessments.splice(indexToDelete, 1);
-    },
     updateAssessments(state, { payload }) {
-      const { courseCode, assessments } = payload;
+      const { code, assessments, currMark } = payload;
       const courseIndex = state.currentCourses.findIndex(
-        (course) => course.code === courseCode
+        (course) => course.code === code
       );
 
       if (courseIndex === -1) {
@@ -79,6 +46,7 @@ const coursesSlice = createSlice({
         return;
       }
       state.currentCourses[courseIndex].assessments = assessments;
+      state.currentCourses[courseIndex].currMark = currMark;
     },
     updateCourse(state, { payload }) {
       const { code, familiarity, expectedMark } = payload;
@@ -96,12 +64,6 @@ const coursesSlice = createSlice({
   },
 });
 
-export const {
-  addCourse,
-  setCourses,
-  deleteAssessment,
-  addAssessment,
-  updateAssessments,
-  updateCourse,
-} = coursesSlice.actions;
+export const { addCourse, setCourses, updateAssessments, updateCourse } =
+  coursesSlice.actions;
 export default coursesSlice.reducer;

@@ -132,7 +132,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
       },
     }, //, type: "date"
     {
-      field: "customReminder",
+      field: "reminder",
       headerName: "Reminder",
       editable: true,
       inWidth: 200,
@@ -217,10 +217,22 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
                   );
                   if (index === -1) return;
                   setTableData([
-                    ...tableData.filter((row) => row.name !== params.id),
+                    ...tableData.filter(
+                      (row) => course + "-" + row.name !== params.id
+                    ),
                     { ...tableData[index], [params.field]: params.value },
                   ]);
                 });
+              }}
+              initialState={{
+                sorting: {
+                  sortModel: [
+                    {
+                      field: "name",
+                      sort: "asc",
+                    },
+                  ],
+                },
               }}
             />
           </div>

@@ -17,6 +17,7 @@ import axios from "axios";
 import { apiURL } from "./utils/constant";
 import { setCourses } from "./store/courses";
 import CustomSpinner from "./components/CustomSpinner";
+import Upcoming from "./modules/Upcoming";
 
 function App() {
   const courses = useSelector(
@@ -68,6 +69,7 @@ function App() {
                   >
                     <Routes>
                       <Route path="/add" element={<AddCourse />} />
+                      <Route path="/upcoming" element={<Upcoming />} />
                       <Route
                         path="/dashboard"
                         element={<Dashboard courses={courses} />}
@@ -77,7 +79,7 @@ function App() {
                           e //add routes for all courses
                         ) => (
                           <Route
-                            path={e.code}
+                            path={e.code.toLowerCase()}
                             element={<Course courseInfo={e} />}
                           />
                         )

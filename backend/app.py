@@ -103,11 +103,12 @@ def update_assessment():
     # getting user from request
     user = get_user(request.headers.get("Utorid"))
     # checking request has everything needed
-    if not(request.json.get('code', None)) or not (request.json.get('assessments', None)):
+    if not(request.json.get('code', None)) or not (request.json.get('assessments', None)) or not (request.json.get('currMark', None)):
         return make_response(jsonify(message='Error missing required course information'), 400)
     
     req_code = request.json['code']
     req_assessments = request.json['assessments']
+    req_currMark = request.json['currMark']
     existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(req_code).get().val()
     # checking if the course exists
     if not existing_course:
@@ -115,7 +116,7 @@ def update_assessment():
 
     try: 
         # setting assessment info in the database
-        db.child('users').child(user).child("courses").child(req_code).child("assessments").set(req_assessments)
+        db.child('users').child(user).child("courses").child(req_code).update({"assessments": req_assessments, "currMark": req_currMark})
         return jsonify(message="success")
     except:
         return make_response(jsonify(message='Error updating assessments'), 401)

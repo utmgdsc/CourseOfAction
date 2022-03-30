@@ -32,7 +32,7 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
             <ListItem
               button
               onClick={() => {
-                navigation("/" + text);
+                navigation("/" + text.toLowerCase());
               }}
               sx={{ borderRadius: 2 }}
               key={index}
@@ -47,7 +47,7 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
               button
               sx={{ borderRadius: 2 }}
               onClick={() => {
-                navigation("/" + e.code);
+                navigation("/" + e.code.toLowerCase());
               }}
               key={e.code}
             >

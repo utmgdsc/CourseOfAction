@@ -4,7 +4,6 @@ import {
   Box,
   TextField,
   Slider,
-  MenuItem,
   Button,
   Stack,
   Grid,
@@ -20,22 +19,19 @@ import InfoIcon from "@mui/icons-material/Info";
 import axios from "axios";
 import { apiURL } from "../utils/constant";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import CustomSpinner from "../components/CustomSpinner";
+import { RootState } from "../store/index";
 
 function AddCourse() {
   const [assessments, setAssessments] = useState<Assessment[]>([]);
   const [course, setCourse] = useState<CourseInterface>({
     assessments: [],
-    name: "",
-    credit: 0.5,
     expectedMark: 0,
     familiarity: 5,
-    offering: "",
     currMark: 0,
+    offering: "",
     code: "",
-    scoreRequired: 0,
-    percentLeft: 0,
   });
   const [errors, setErrors] = useState({
     expectedMark: false,
@@ -45,6 +41,9 @@ function AddCourse() {
   });
   const [file, setFile] = useState<null | File>(null);
   const [spinner, setSpinner] = useState(false);
+  const reduxCourses = useSelector(
+    (store: RootState) => store.courses.currentCourses
+  );
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -69,12 +68,6 @@ function AddCourse() {
         newState[name] = value;
         setErrors({ ...errors, [name]: validateCode(value) });
         break;
-      case "name":
-        newState[name] = value;
-        break;
-      case "credit":
-        newState[name] = value;
-        break;
       case "expectedMark":
         let v = value;
         if (value > 100) v = 100;
@@ -96,6 +89,10 @@ function AddCourse() {
   };
 
   const handleSubmit = () => {
+    const data = {
+      ...course,
+      expectedMark: Number(course.expectedMark),
+    };
     axios({
       method: "POST",
       url: `${apiURL}/add-course`,
@@ -113,7 +110,9 @@ function AddCourse() {
 
   const validateCode = (value: string) => {
     const regexEx = /^[A-Z]{3}[1-4][0-9]{2}H[135]$/im;
-    return !value.toLowerCase().match(regexEx);
+    const notAnotherCourseName =
+      reduxCourses.filter((c) => c.code === value).length === 0;
+    return !value.toLowerCase().match(regexEx) || !notAnotherCourseName;
   };
 
   const validateExpectedMark = (value: number) => value.toString() === "";
@@ -126,7 +125,6 @@ function AddCourse() {
   const canSubmit = () => {
     if (errors.code || errors.expectedMark || errors.offering) return true;
     if (
-      course.name === "" ||
       course.code === "" ||
       course.offering === "" ||
       course.assessments.length === 0
@@ -177,15 +175,6 @@ function AddCourse() {
               are capital letter, followed by 3 numbers, H and 1/3/5. For
               example: CSC108H1, MGT130H5
             </Typography>
-            <Typography variant="h6">Course Name</Typography>
-            <TextField
-              id="outlined-basic"
-              variant="outlined"
-              name="name"
-              value={course.name}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
-            />
             <Box display="flex" alignItems="center">
               <Typography variant="h6" mr={1}>
                 Familiarity
@@ -224,20 +213,6 @@ function AddCourse() {
               W/S/Y/F indicating each semesters, followed by year in YYYY
               format. For example: W2020, F2022
             </Typography>
-            <Typography variant="h6">Credit</Typography>
-            <TextField
-              id="outlined-basic"
-              select
-              type="number"
-              defaultValue={0.5}
-              name="credit"
-              value={course.credit}
-              onChange={handleChange}
-              sx={{ marginBottom: 2 }}
-            >
-              <MenuItem value={0.5}>0.5</MenuItem>
-              <MenuItem value={1}>1</MenuItem>
-            </TextField>
             <Typography variant="h6">Expected Grade</Typography>
             <TextField
               id="outlined-basic"

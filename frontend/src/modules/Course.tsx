@@ -80,7 +80,11 @@ const Info = ({ title, desc, color, tooltip }: InfoInterface) => {
 
 function Course({ courseInfo }: propTypes) {
   const [assessments, setAssessments] = useState(courseInfo.assessments);
-  const [course, setCourse] = useState(courseInfo);
+  const [course, setCourse] = useState({
+    ...courseInfo,
+    scoreRequired: 0,
+    percentLeft: 0,
+  });
   const [saveStatus, setSaveStatus] = useState({
     error: false,
     success: false,
@@ -98,7 +102,7 @@ function Course({ courseInfo }: propTypes) {
 
   useEffect(() => {
     // To update course state when rendering a new course
-    setCourse(courseInfo);
+    setCourse({ ...courseInfo, scoreRequired: 0, currMark: 0, percentLeft: 0 });
     setAssessments(courseInfo.assessments);
   }, [courseInfo]);
 
@@ -149,6 +153,7 @@ function Course({ courseInfo }: propTypes) {
     const data = {
       assessments: assessments_temp,
       code: courseInfo.code,
+      currMark: course.currMark,
     };
 
     setLoading(true);
@@ -158,9 +163,7 @@ function Course({ courseInfo }: propTypes) {
       .then(() => {
         setLoading(false);
         setSaveStatus({ ...saveStatus, success: true });
-        dispatch(
-          updateAssessments({ courseCode: courseInfo.code, assessments })
-        );
+        dispatch(updateAssessments(data));
         setCourse({ ...course, assessments });
         setTimeout(
           () => setSaveStatus({ ...saveStatus, success: false }),
@@ -168,7 +171,7 @@ function Course({ courseInfo }: propTypes) {
         );
       })
       .catch(() => {
-        setLoading(true);
+        setLoading(false);
         setSaveStatus({ ...saveStatus, error: true });
         setTimeout(() => setSaveStatus({ ...saveStatus, error: false }), 5000);
       });
@@ -230,6 +233,7 @@ function Course({ courseInfo }: propTypes) {
     <Container>
       <Box my={5}>
         <Typography variant="h1">{course.code}</Typography>
+        {/* Status as we update the course information on the backend */}
         {saveCourseInfoStatus.error ? (
           <Alert
             severity="error"
@@ -410,6 +414,7 @@ function Course({ courseInfo }: propTypes) {
           </Box>
         ) : null}
 
+        {/* Status as we update the assessments on the backend */}
         {saveStatus.error ? (
           <Alert
             severity="error"
@@ -434,9 +439,9 @@ function Course({ courseInfo }: propTypes) {
           setTableData={setAssessments}
           save={{
             function: saveAssessments,
-            disabled: assessments === course.assessments || loading,
+            disabled: assessments == courseInfo.assessments || loading,
           }}
-          course={course.name}
+          course={course.code}
         />
       </Box>
     </Container>

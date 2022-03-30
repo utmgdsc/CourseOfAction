@@ -19,7 +19,7 @@ interface propTypes {
   courses: CourseInterface[];
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomPieTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
       <div
@@ -61,8 +61,10 @@ function Dashboard({ courses }: propTypes) {
     let percentLeft: number = 100 * courses.length;
     courses.forEach((course) => {
       course.assessments.forEach((assessment) => {
-        const { weight } = assessment;
-        currentWeight += weight;
+        const { weight, mark } = assessment;
+        if (mark !== -1 && mark !== null) {
+          currentWeight += weight;
+        }
       });
     });
     return [
@@ -85,9 +87,6 @@ function Dashboard({ courses }: propTypes) {
         Dashboard
       </Typography>
       <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-        <Grid item xs={12} lg={6} textAlign={{ xs: "center", lg: "left" }}>
-          <Typography variant="h6">CGPA data here</Typography>
-        </Grid>
         <Grid item xs={12} lg={6} sx={{ height: "300px" }}>
           <ResponsiveContainer>
             <PieChart>
@@ -105,11 +104,11 @@ function Dashboard({ courses }: propTypes) {
                   ></Cell>
                 ))}
               </Pie>
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomPieTooltip />} />
             </PieChart>
           </ResponsiveContainer>
         </Grid>
-        <Grid item xs={12} lg={6} sx={{ width: "100%", height: "200px" }}>
+        <Grid item xs={12} lg={6} sx={{ width: "100%" }}>
           <ResponsiveContainer>
             <BarChart height={200} data={courses}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -126,7 +125,7 @@ function Dashboard({ courses }: propTypes) {
             </BarChart>
           </ResponsiveContainer>
         </Grid>
-        <Grid item xs={12} lg={6}>
+        <Grid item xs={12}>
           <Box
             sx={{
               backgroundColor: "navBackgorund.secondary",
@@ -157,16 +156,6 @@ function Dashboard({ courses }: propTypes) {
               <Typography ml={3}>CSCI1030 - Deadline</Typography>
               <Typography ml={3}>CSCI1030 - Deadline</Typography>
             </Box>
-          </Box>
-        </Grid>
-        <Grid item xs={12}>
-          <Box
-            style={{
-              alignItems: "center",
-            }}
-          >
-            <Typography> What to work on ? </Typography>
-            <Typography> GOOGLE CALANDER</Typography>
           </Box>
         </Grid>
       </Grid>
