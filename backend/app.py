@@ -2,18 +2,34 @@ import json
 import pyrebase
 import uuid
 import parser
+import reminder
 import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
 from flask_cors import CORS, cross_origin
+from flask_apscheduler import APScheduler
 import os
 app = Flask(__name__) #, static_folder="build" for prod
 cors = CORS(app)
 
+# schedule process to send notifications 
+scheduler = APScheduler()
+scheduler.init_app(app)
+scheduler.start()
+
+
 # Connect to Firebase Realtime DB
 firebase = pyrebase.initialize_app(json.load(open('secrets.json')))
-auth = firebase.auth()
 # Authenticate Firebase tables
 db = firebase.database()
+
+
+@scheduler.task('cron', id='send_notif', hour='8')
+def send_notification():
+    """Schedule notifications to be sent out at 8 am for all users"""
+    users = db.child("users").get().val()
+    for _,info in users.items():
+        if "courses" in info and info["courses"]:
+            reminder.send_email(info.get("name"), info.get("email", "courseofactoin@gmail.com"), info["courses"])
 
 def get_user(utorid):
     """
@@ -22,6 +38,8 @@ def get_user(utorid):
     """
     if not utorid and app.debug: # for local dev we set it to a defined test user
         user = "UuT5Mb7uJKO8N6mTTv9LuyCexgl1"
+    elif not utorid:
+        abort(401, description="User not authenticated") 
     else:
         user = hashlib.sha256(utorid.encode("utf-8")).hexdigest()
     # check existing users
@@ -84,16 +102,9 @@ def add_course():
         db.child('users').child(user).child("courses").child(request.json['code']).set(request.json)
         # TOOD: add this later
         # db.child('Courses').child(request.form['courseCode']).set(request.json)
-        # auth.send_email_verification(user['idToken'])
         return jsonify(messge="success")
     except:
         return make_response(jsonify(message='Error creating course'), 401)
-
-def generate_reminders(familiarity, assessments):
-    """TODO: create this function to handle add and update course api
-    Use the familiarity scale to set reminder dates for each assessment
-    """
-    return assessments
 
 @app.route('/coa/api/update-assessments', methods=["POST"])
 def update_assessment():
@@ -148,13 +159,6 @@ def update_course():
         return make_response(jsonify(message='Error updating assessments'), 401)
 
 
-@app.errorhandler(500)
-def app_error(e):
-    return make_response("Application error! Please try again later!"), 500
-
-def bad_request(mess: str):
-    return make_response(jsonify(message=mess), 400)
-
 @app.route('/coa/api/parse-syllabus', methods=["POST"])
 @cross_origin()
 def parse_syllabus():
@@ -177,6 +181,12 @@ def parse_syllabus():
         return bad_request("The syllabus format is not supported. Please enter your assessments manually.")
     return { "assessments": parsed_assessments }
 
+@app.errorhandler(500)
+def app_error(e):
+    return make_response("Application error! Please try again later!"), 500
+
+def bad_request(mess: str):
+    return make_response(jsonify(message=mess), 400)
 
 if __name__ == "__main__":
     app.run(debug=True, port=8989) # for hot reload
