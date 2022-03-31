@@ -5,11 +5,9 @@ import parser
 import reminder
 import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
-from flask_cors import CORS, cross_origin
 from flask_apscheduler import APScheduler
 import os
 app = Flask(__name__) #, static_folder="build" for prod
-cors = CORS(app)
 
 # schedule process to send notifications 
 scheduler = APScheduler()
@@ -84,7 +82,6 @@ def get_courses():
     return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
 
 @app.route('/coa/api/add-course', methods=["POST"])
-@cross_origin()
 def add_course():
     """
     Function to create a new course and add it for that specific user 
@@ -106,6 +103,25 @@ def add_course():
     except:
         return make_response(jsonify(message='Error creating course'), 401)
 
+@app.route('/coa/api/delete-course', methods=["POST"])
+def delete_course():
+    """
+    Function to delete given course and from that specific user 
+    """
+    # getting user from request
+    user = get_user(request.headers.get("Utorid"))
+    # checking request has everything needed
+    if not(request.json.get('code', None)):
+        return make_response(jsonify(message='Error missing required course information'), 400)
+    try:
+        courses = db.child('users').child(user).child("courses").get().val()
+        if request.json['code'] in courses:
+            db.child('users').child(user).child("courses").child(request.json['code']).remove()
+            return jsonify(messge="success")
+        return make_response(jsonify(message="Course does not exist for current user"), 401)
+    except:
+        return make_response(jsonify(message='Error deleting course'), 401)
+    
 @app.route('/coa/api/update-assessments', methods=["POST"])
 def update_assessment():
     """
@@ -160,7 +176,6 @@ def update_course():
 
 
 @app.route('/coa/api/parse-syllabus', methods=["POST"])
-@cross_origin()
 def parse_syllabus():
     # get and save the file
     if 'file' not in request.files:
