@@ -62,7 +62,7 @@ def send_email(name, email, courses):
         subject='CourseOfAction Assessment Deadline Reminder',
         html_content= f'{header}'+ f"<tr>{pretty_df(html_df)}</tr></table></body>")
     try:
-        sg = SendGridAPIClient(json.load(open("sendgrid.json")).get("SENDGRID_API_KEY"))
+        sg = SendGridAPIClient(json.load(open("secret_sendgrid.json")).get("SENDGRID_API_KEY"))
         response = sg.send(message)
         print(response.status_code)
         print(response.body)

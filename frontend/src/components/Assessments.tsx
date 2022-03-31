@@ -49,7 +49,9 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
   const deleteAssesments = React.useCallback(
     (id) => () => {
       setTimeout(() => {
-        setTableData((tableData) => tableData.filter((row) => row.name !== id));
+        setTableData((tableData) =>
+          tableData.filter((row) => course + "-" + row.name !== id)
+        );
       });
     },
     []
@@ -114,7 +116,8 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
       type: "number",
       flex: 0.5,
       valueFormatter: (params: any) => {
-        if (params.value === -1 || params.value === null) return "-";
+        if (params.value && (params.value === null || params.value === -1))
+          return "-";
         else return params.value;
       },
     },
