@@ -1,5 +1,5 @@
 import { Container, Button, Typography, Box, Grid } from "@mui/material";
-import { CourseInterface } from "../store/courses";
+import { Assessment, CourseInterface } from "../store/courses";
 import {
   BarChart,
   XAxis,
@@ -80,7 +80,26 @@ function Dashboard({ courses }: propTypes) {
   };
   let data = calculateGradeData();
   const COLORS = ["#00C49F", theme.palette.primary.main];
-
+  const getDeadlines = () => {
+    let deadlines: Assessment[] = [];
+    courses.forEach((course) => {
+      course.assessments.forEach((assessment) => {
+        if (assessment.deadline != undefined) {
+          deadlines.push(assessment);
+        }
+      });
+    });
+    deadlines.sort(function (a, b) {
+      return +new Date(a.deadline) - +new Date(b.deadline);
+    });
+    return deadlines.map((a) => {
+      return (
+        <Typography ml={3} key={a.name}>
+          {a.name} - {new Date(a.deadline).toDateString()}
+        </Typography>
+      );
+    });
+  };
   return (
     <Container>
       <Typography variant="h1" color="primary.main">
@@ -151,11 +170,7 @@ function Dashboard({ courses }: propTypes) {
                 More
               </Button>
             </Box>
-            <Box>
-              <Typography ml={3}>CSCI1030 - Deadline</Typography>
-              <Typography ml={3}>CSCI1030 - Deadline</Typography>
-              <Typography ml={3}>CSCI1030 - Deadline</Typography>
-            </Box>
+            <Box>{getDeadlines()}</Box>
           </Box>
         </Grid>
       </Grid>
