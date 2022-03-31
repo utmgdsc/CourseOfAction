@@ -75,7 +75,7 @@ function Upcoming() {
         (c.assessments[i].deadline !== "" || c.assessments[i].deadline !== null)
       )
         deadlines.push({
-          title: c.assessments[i].name + " - " + c.code,
+          title: c.assessments[i].name,
           start: new Date(c.assessments[i].deadline),
           end: new Date(c.assessments[i].deadline),
           allDay: true,
@@ -108,14 +108,20 @@ function Upcoming() {
 
   return (
     <Container>
-      <Stack>
-        {console.log(legendColor)}
-        {legendColor.map((c) => {
-          <Box width="100%">
-            <Box width="50px" height="50px" sx={{ backgroundColor: c.color }} />
-            <Typography>{c.code}</Typography>
-          </Box>;
-        })}
+      <Stack mb={4}>
+        {legendColor.length !== 0
+          ? legendColor.map((c) => (
+              <Box display="flex" alignItems="center">
+                <Box
+                  width="30px"
+                  height="20px"
+                  mr={1}
+                  sx={{ backgroundColor: c.color }}
+                />
+                <Typography>{c.code}</Typography>
+              </Box>
+            ))
+          : null}
       </Stack>
       <Calendar
         localizer={localizer}
