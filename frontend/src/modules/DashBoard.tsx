@@ -14,6 +14,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { useTheme } from "@mui/system";
+import { useNavigate } from "react-router-dom";
 
 interface propTypes {
   courses: CourseInterface[];
@@ -41,6 +42,7 @@ const CustomPieTooltip = ({ active, payload, label }: any) => {
 
 function Dashboard({ courses }: propTypes) {
   const theme = useTheme();
+  const navigate = useNavigate();
   if (courses.length === 0) {
     return (
       <Container>
@@ -108,7 +110,7 @@ function Dashboard({ courses }: propTypes) {
             </PieChart>
           </ResponsiveContainer>
         </Grid>
-        <Grid item xs={12} lg={6} sx={{ width: "100%" }}>
+        <Grid item xs={12} lg={6} sx={{ width: "100%", height: "292px" }}>
           <ResponsiveContainer>
             <BarChart height={200} data={courses}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -147,6 +149,7 @@ function Dashboard({ courses }: propTypes) {
                 color="primary"
                 size="small"
                 sx={{ ml: 2, color: "white" }}
+                onClick={() => navigate("/upcoming")}
               >
                 More
               </Button>
