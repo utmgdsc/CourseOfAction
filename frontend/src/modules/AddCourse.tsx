@@ -189,7 +189,7 @@ function AddCourse() {
                 defaultValue={5}
                 step={1}
                 marks
-                min={0}
+                min={1}
                 max={5}
                 valueLabelDisplay="auto"
                 value={course.familiarity}
