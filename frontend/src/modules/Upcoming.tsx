@@ -5,9 +5,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import { CourseInterface } from "../store/courses";
 import { RootState } from "../store/index";
-import clsx from "clsx";
 import "./calendar.css";
-// import "react-big-calendar/lib/css/react-big-calendar.css";
 
 class CalendarEvent {
   title: string;

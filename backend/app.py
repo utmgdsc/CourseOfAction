@@ -7,7 +7,13 @@ import hashlib
 from flask import Flask, jsonify, make_response, request, abort, send_from_directory
 from flask_apscheduler import APScheduler
 import os
+
 app = Flask(__name__) #, static_folder="build" for prod
+
+# Uncomment in development
+if os.environ['FLASK_ENV'] == 'development':
+    from flask_cors import CORS
+    cors = CORS(app)
 
 # schedule process to send notifications 
 scheduler = APScheduler()
@@ -202,7 +208,3 @@ def app_error(e):
 
 def bad_request(mess: str):
     return make_response(jsonify(message=mess), 400)
-
-if __name__ == "__main__":
-    app.run(debug=True, port=8989) # for hot reload
-    

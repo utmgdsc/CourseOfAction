@@ -8,6 +8,9 @@ import {
   Slider,
   Grid,
   Button,
+  DialogActions,
+  DialogTitle,
+  Dialog,
 } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import Assessments from "../components/Assessments";
@@ -15,11 +18,16 @@ import { CourseInterface } from "../store/courses";
 import { useTheme } from "@mui/system";
 import InfoIcon from "@mui/icons-material/Info";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Tooltip as MUIToolTip } from "@mui/material";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 import { apiURL } from "../utils/constant";
-import { updateAssessments, updateCourse } from "../store/courses";
+import {
+  updateAssessments,
+  updateCourse,
+  deleteCourse as deleteCourseRedux,
+} from "../store/courses";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -94,11 +102,17 @@ function Course({ courseInfo }: propTypes) {
     success: false,
   });
   const [loading, setLoading] = useState(false);
+  const [deleteInfo, setDeleteInfo] = useState({
+    open: false,
+    error: false,
+    loading: false,
+  });
   const theme = useTheme();
   const dispatch = useDispatch();
   const updatedCourseInfo =
     course.expectedMark !== courseInfo.expectedMark ||
     course.familiarity !== courseInfo.familiarity;
+  const navigate = useNavigate();
 
   useEffect(() => {
     // To update course state when rendering a new course
@@ -229,10 +243,77 @@ function Course({ courseInfo }: propTypes) {
       });
   };
 
+  const deleteCourse = () => {
+    setDeleteInfo({ ...deleteInfo, loading: true });
+    const data = { code: courseInfo.code };
+
+    axios
+      .post(`${apiURL}/delete-course`, data)
+      .then(() => {
+        navigate("/dashboard");
+        dispatch(deleteCourseRedux(data));
+      })
+      .catch((e) => {
+        setDeleteInfo({ ...deleteInfo, loading: false, error: true });
+        setTimeout(
+          () => setDeleteInfo({ open: false, loading: false, error: false }),
+          5000
+        );
+        console.log(e);
+      });
+  };
+
   return (
     <Container>
+      {/* Course does not delete */}
+      {deleteInfo.error ? (
+        <Alert
+          severity="error"
+          onClose={() => setDeleteInfo({ ...deleteInfo, error: false })}
+        >
+          There was an error therefore we could not delete this course please
+          try again!
+        </Alert>
+      ) : null}
+      <Dialog
+        open={deleteInfo.open}
+        onClose={() => {
+          setDeleteInfo({ ...deleteInfo, open: false });
+        }}
+      >
+        <DialogTitle>Are you sure you want to delete this course?</DialogTitle>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setDeleteInfo({ ...deleteInfo, open: false });
+            }}
+          >
+            Cancel
+          </Button>
+          <Button onClick={deleteCourse}>Continue</Button>
+        </DialogActions>
+      </Dialog>
       <Box my={5}>
-        <Typography variant="h1">{course.code}</Typography>
+        <Box
+          display="flex"
+          flexWrap="wrap"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Typography variant="h1">{course.code}</Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            size="medium"
+            sx={{ color: "white" }}
+            disabled={deleteInfo.loading}
+            onClick={() => {
+              setDeleteInfo({ ...deleteInfo, open: true });
+            }}
+          >
+            Detele Course
+          </Button>
+        </Box>
         {/* Status as we update the course information on the backend */}
         {saveCourseInfoStatus.error ? (
           <Alert
@@ -439,7 +520,7 @@ function Course({ courseInfo }: propTypes) {
           setTableData={setAssessments}
           save={{
             function: saveAssessments,
-            disabled: assessments == courseInfo.assessments || loading,
+            disabled: assessments === courseInfo.assessments || loading,
           }}
           course={course.code}
         />

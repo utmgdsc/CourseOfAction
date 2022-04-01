@@ -61,9 +61,26 @@ const coursesSlice = createSlice({
       state.currentCourses[courseIndex].expectedMark = expectedMark;
       state.currentCourses[courseIndex].familiarity = familiarity;
     },
+    deleteCourse(state, { payload }) {
+      const { code } = payload;
+      const courseIndex = state.currentCourses.findIndex(
+        (course) => course.code === code
+      );
+
+      if (courseIndex === -1) {
+        // Error handling
+        return;
+      }
+      state.currentCourses.splice(courseIndex, 1);
+    },
   },
 });
 
-export const { addCourse, setCourses, updateAssessments, updateCourse } =
-  coursesSlice.actions;
+export const {
+  addCourse,
+  setCourses,
+  updateAssessments,
+  updateCourse,
+  deleteCourse,
+} = coursesSlice.actions;
 export default coursesSlice.reducer;

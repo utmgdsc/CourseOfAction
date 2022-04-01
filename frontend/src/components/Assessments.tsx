@@ -244,7 +244,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
         <Dialog open={isAddOpen} onClose={() => setIsAddOpen(false)}>
           <DialogTitle>Add Assessment</DialogTitle>
           <DialogContent>
-            <DialogContentText color="white">
+            <DialogContentText color="text.main">
               Please fill in the following details to create an assessment.
             </DialogContentText>
             <TextField
