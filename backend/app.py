@@ -8,10 +8,10 @@ from flask import Flask, jsonify, make_response, request, abort, send_from_direc
 from flask_apscheduler import APScheduler
 import os
 
-app = Flask(__name__) #, static_folder="build" for prod
+app = Flask(__name__, static_folder="build") # for prod
 
-# Uncomment in development
-if os.environ['FLASK_ENV'] == 'development':
+# Enable CORS only in development
+if app.debug:
     from flask_cors import CORS
     cors = CORS(app)
 
