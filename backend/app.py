@@ -136,7 +136,7 @@ def update_assessment():
     # getting user from request
     user = get_user(request.headers.get("Utorid"))
     # checking request has everything needed
-    if not(request.json.get('code', None)) or not (request.json.get('assessments', None)) or not (request.json.get('currMark', None)):
+    if not(request.json.get('code', None)) or not (request.json.get('assessments', None)) or (request.json.get('currMark', None) == None):
         return make_response(jsonify(message='Error missing required course information'), 400)
     
     req_code = request.json['code']

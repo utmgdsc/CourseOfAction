@@ -166,7 +166,7 @@ function Course({ courseInfo }: propTypes) {
     });
     const data = {
       assessments: assessments_temp,
-      code: courseInfo.code,
+      code: course.code,
       currMark: course.currMark,
     };
 

@@ -15,6 +15,7 @@ import {
 } from "recharts";
 import { useTheme } from "@mui/system";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 interface propTypes {
   courses: CourseInterface[];
@@ -82,11 +83,12 @@ function Dashboard({ courses }: propTypes) {
   };
   let data = calculateGradeData();
   const COLORS = ["#00C49F", theme.palette.primary.main];
+
   const getDeadlines = () => {
     let deadlines: Assessment[] = [];
     courses.forEach((course) => {
       course.assessments.forEach((assessment) => {
-        if (assessment.deadline != undefined) {
+        if (assessment.deadline !== undefined) {
           deadlines.push(assessment);
         }
       });
@@ -94,14 +96,29 @@ function Dashboard({ courses }: propTypes) {
     deadlines.sort(function (a, b) {
       return +new Date(a.deadline) - +new Date(b.deadline);
     });
-    return deadlines.map((a) => {
-      return (
-        <Typography ml={3} key={a.name}>
-          {a.name} - {new Date(a.deadline).toDateString()}
-        </Typography>
-      );
-    });
+    const today = moment();
+    let deadlineDisplay = deadlines
+      .filter((a) => moment(a.deadline) >= today)
+      .map((a) => {
+        return (
+          <Typography ml={3} key={a.name}>
+            {a.name} - {new Date(a.deadline).toDateString()}
+          </Typography>
+        );
+      });
+
+    deadlineDisplay =
+      deadlineDisplay.length > 5
+        ? deadlineDisplay.splice(0, 5)
+        : deadlineDisplay;
+
+    return deadlineDisplay.length > 0 ? (
+      deadlineDisplay
+    ) : (
+      <Typography ml={3}>No upcoming deadlines!</Typography>
+    );
   };
+
   return (
     <Container>
       <Typography variant="h1" color="primary.main">
@@ -137,11 +154,17 @@ function Dashboard({ courses }: propTypes) {
               <YAxis />
               <Tooltip />
               <Legend />
-              <Bar dataKey={"currMark"} fill={COLORS[0]} name="Current Mark" />
+              <Bar
+                dataKey={"currMark"}
+                fill={COLORS[0]}
+                name="Current Percentage"
+                unit="%"
+              />
               <Bar
                 dataKey={"expectedMark"}
                 fill={COLORS[1]}
-                name="Expected Mark"
+                name="Expected Percentage"
+                unit="%"
               />
             </BarChart>
           </ResponsiveContainer>

@@ -62,7 +62,7 @@ def extract_info(filename):
                         'name': name,
                         'deadline': None,
                         'weight': int(weight[:-1]),
-                        'mark': None,
+                        'mark': -1,
                         'reminder': None
                     }
                 else:
@@ -71,7 +71,7 @@ def extract_info(filename):
                         'name': name,
                         'deadline': due_date,
                         'weight': int(weight[:-1]),
-                        'mark': None,
+                        'mark': -1,
                         'reminder': due_date
                     }
                 assessments.append(assessment)
