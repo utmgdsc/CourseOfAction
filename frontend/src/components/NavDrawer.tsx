@@ -64,49 +64,6 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
               </ListItemText>
             </ListItem>
           ))}
-          {/* Testing */}
-          {courses.currentCourses.map((e, i) => (
-            <ListItem
-              button
-              sx={{ borderRadius: 2 }}
-              onClick={() => {
-                navigation("/" + e.code.toLowerCase());
-              }}
-              key={e.code}
-            >
-              <ListItemText>
-                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
-              </ListItemText>
-            </ListItem>
-          ))}
-          {courses.currentCourses.map((e, i) => (
-            <ListItem
-              button
-              sx={{ borderRadius: 2 }}
-              onClick={() => {
-                navigation("/" + e.code.toLowerCase());
-              }}
-              key={e.code}
-            >
-              <ListItemText>
-                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
-              </ListItemText>
-            </ListItem>
-          ))}
-          {courses.currentCourses.map((e, i) => (
-            <ListItem
-              button
-              sx={{ borderRadius: 2 }}
-              onClick={() => {
-                navigation("/" + e.code.toLowerCase());
-              }}
-              key={e.code}
-            >
-              <ListItemText>
-                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
-              </ListItemText>
-            </ListItem>
-          ))}
         </List>
         <Box
           sx={{
