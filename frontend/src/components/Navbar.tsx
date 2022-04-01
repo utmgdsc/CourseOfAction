@@ -13,9 +13,9 @@ import { styled } from "@mui/material/styles";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../store/theme";
-import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
 import NavDrawer from "./NavDrawer";
 
@@ -96,19 +96,21 @@ function Navbar({ updateThemeCookie }: propTypes) {
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ display: "flex" }}>
-            <Avatar sx={{ mr: "5px" }} src="/coa/app/grade.png" />
-            <Typography
-              fontWeight="bold"
-              fontSize="30px"
-              color="primary.main"
-              noWrap
-              component="div"
-              display={["none", "block"]}
-            >
-              CourseOfAction
-            </Typography>
-          </Box>
+          <Link to="/dashboard" style={{ textDecoration: "none" }}>
+            <Box sx={{ display: "flex" }}>
+              <Avatar sx={{ mr: "5px" }} src="/coa/app/grade.png" />
+              <Typography
+                fontWeight="bold"
+                fontSize="30px"
+                color="primary.main"
+                noWrap
+                component="div"
+                display={["none", "block"]}
+              >
+                CourseOfAction
+              </Typography>
+            </Box>
+          </Link>
           <Box sx={{ display: "flex", alignItems: "center" }}>
             <Box sx={{ display: "flex", alignItems: "center" }}>
               <LightModeIcon fontSize="large" />

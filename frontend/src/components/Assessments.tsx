@@ -37,7 +37,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
     customReminder: "", // Need to be date, error in database
     deadline: "", // Need to be date, error in database
     isCompleted: false, // Need to be boolean, error in database
-    mark: 0,
+    mark: -1,
     reminder: "", // Need to be date, error in database
     weight: 0,
   });
@@ -120,6 +120,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
           return "-";
         else return params.value;
       },
+      hide: save === null,
     },
     {
       field: "deadline",

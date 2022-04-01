@@ -9,6 +9,9 @@ import {
   Box,
   Typography,
   Button,
+  useTheme,
+  Stack,
+  Switch,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
@@ -22,12 +25,17 @@ interface Props {
 function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
   const courses = useSelector((state: RootState) => state.courses);
   const navigation = useNavigate();
+  const theme = useTheme();
   const drawerInfo = (
     <Box>
       <Toolbar />
       <Box sx={{ overflow: "auto" }}>
         <Divider />
-        <List>
+        <List
+          style={{
+            height: `calc(100vh - ${theme.spacing(20)})`,
+          }}
+        >
           {["Dashboard", "Upcoming"].map((text, index) => (
             <ListItem
               button
@@ -56,20 +64,82 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
               </ListItemText>
             </ListItem>
           ))}
-          <ListItem sx={{ borderRadius: 2 }} key="addCourse">
-            <Button
-              variant="contained"
-              color="primary"
-              size="large"
-              sx={{ color: "white" }}
+          {/* Testing */}
+          {courses.currentCourses.map((e, i) => (
+            <ListItem
+              button
+              sx={{ borderRadius: 2 }}
               onClick={() => {
-                navigation("/add");
+                navigation("/" + e.code.toLowerCase());
               }}
+              key={e.code}
             >
-              Add Course
-            </Button>
-          </ListItem>
+              <ListItemText>
+                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
+          {courses.currentCourses.map((e, i) => (
+            <ListItem
+              button
+              sx={{ borderRadius: 2 }}
+              onClick={() => {
+                navigation("/" + e.code.toLowerCase());
+              }}
+              key={e.code}
+            >
+              <ListItemText>
+                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
+          {courses.currentCourses.map((e, i) => (
+            <ListItem
+              button
+              sx={{ borderRadius: 2 }}
+              onClick={() => {
+                navigation("/" + e.code.toLowerCase());
+              }}
+              key={e.code}
+            >
+              <ListItemText>
+                <Typography sx={{ fontSize: "20px" }}>{e.code}</Typography>
+              </ListItemText>
+            </ListItem>
+          ))}
         </List>
+        <Box
+          sx={{
+            boxShadow: 20,
+            background: "rgba(navBackground.main, 0.8)",
+            position: "fixed",
+            bottom: 0,
+            height: 80,
+            width: "275px",
+          }}
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignContent="flex-end"
+          key="addCourse"
+        >
+          <Box textAlign="center" sx={{ borderTop: 0.5 }}>
+            Notification: ON
+            <Switch /> OFF
+          </Box>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            sx={{ color: "white" }}
+            onClick={() => {
+              navigation("/add");
+            }}
+            fullWidth
+          >
+            Add Course
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
