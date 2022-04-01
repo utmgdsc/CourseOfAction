@@ -12,6 +12,7 @@ import {
   useTheme,
   Stack,
   Switch,
+  Tooltip,
 } from "@mui/material";
 import { useSelector } from "react-redux";
 import { RootState } from "../store/index";
@@ -80,10 +81,12 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
           alignContent="flex-end"
           key="addCourse"
         >
-          <Box textAlign="center" sx={{ borderTop: 0.5 }}>
-            Notification: ON
-            <Switch /> OFF
-          </Box>
+          <Tooltip title="In Beta this doesn't work" placement="top">
+            <Box textAlign="center" sx={{ borderTop: 0.5 }}>
+              Notification: ON
+              <Switch /> OFF
+            </Box>
+          </Tooltip>
           <Button
             variant="contained"
             color="primary"

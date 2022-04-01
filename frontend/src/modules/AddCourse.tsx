@@ -96,7 +96,7 @@ function AddCourse() {
     axios({
       method: "POST",
       url: `${apiURL}/add-course`,
-      data: JSON.stringify(course),
+      data,
       headers: { "Content-Type": "application/json" },
     })
       .then((res) => {

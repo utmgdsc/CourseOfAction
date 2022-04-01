@@ -311,7 +311,7 @@ function Course({ courseInfo }: propTypes) {
               setDeleteInfo({ ...deleteInfo, open: true });
             }}
           >
-            Detele Course
+            Delete Course
           </Button>
         </Box>
         {/* Status as we update the course information on the backend */}
