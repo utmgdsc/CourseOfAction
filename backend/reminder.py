@@ -45,13 +45,12 @@ def generate_content(courses):
     # format date string and rename columns for easier readability
     res['deadline'] = res['deadline'].dt.strftime('%d/%m/%Y')
     res.rename(columns={"deadline": "Due Date", "weight": "Weight (%)", "name": "Assessment Name"}, inplace=True)
-    return res.to_html(index=False, na_rep="-", columns=["Course", "Assessment Name", "Weight (%)", "Due Date"]) 
+    return res.to_html(index=False, na_rep=" - ", columns=["Course", "Assessment Name", "Weight (%)", "Due Date"]) 
 
 def send_email(name, email, courses):
     """ Sends an email to user with a list of upcoming deadlines
     """
     html_df = generate_content(courses)
-    print(html_df)
     if not html_df:
         return
     header = f"""
@@ -76,9 +75,6 @@ def send_email(name, email, courses):
     try:
         sg = SendGridAPIClient(json.load(open("secret_sendgrid.json")).get("SENDGRID_API_KEY"))
         response = sg.send(message)
-        print(response.status_code)
-        print(response.body)
-        print(response.headers)
     except Exception as e:
         print(e)
 
