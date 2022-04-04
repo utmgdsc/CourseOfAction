@@ -32,7 +32,8 @@ def send_notification():
     """Schedule notifications to be sent out at 8 am for all users"""
     users = db.child("users").get().val()
     for _,info in users.items():
-        if "courses" in info and info["courses"]:
+        # Added logic to enable/disable notifications globally
+        if "courses" in info and info["courses"] and "notification" in info and info["notification"]:
             reminder.send_email(info.get("name"), info.get("email", "courseofactoin@gmail.com"), info["courses"])
 
 def get_user(utorid):
