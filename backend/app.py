@@ -169,6 +169,7 @@ def update_course():
     req_code = request.json['code']
     req_expectedMark = request.json['expectedMark']
     req_familiarity = request.json['familiarity']
+    req_notification =  request.json.get('notification', 1)
     existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(req_code).get().val()
     # checking if the course exists
     if not existing_course:
@@ -176,7 +177,7 @@ def update_course():
     
     try: 
         # setting assessment info in the database
-        db.child('users').child(user).child("courses").child(req_code).update({"familiarity": req_familiarity, "expectedMark": req_expectedMark})
+        db.child('users').child(user).child("courses").child(req_code).update({"familiarity": req_familiarity, "expectedMark": req_expectedMark, "notification": req_notification})
         return jsonify(message="success")
     except:
         return make_response(jsonify(message='Error updating assessments'), 401)
