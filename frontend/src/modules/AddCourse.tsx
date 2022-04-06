@@ -32,6 +32,7 @@ function AddCourse() {
     currMark: 0,
     offering: "",
     code: "",
+    notification: 1,
   });
   const [errors, setErrors] = useState({
     expectedMark: false,

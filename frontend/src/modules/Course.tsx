@@ -31,6 +31,7 @@ import {
 
 interface propTypes {
   courseInfo: CourseInterface;
+  notification: 0 | 1;
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -86,7 +87,7 @@ const Info = ({ title, desc, color, tooltip }: InfoInterface) => {
   );
 };
 
-function Course({ courseInfo }: propTypes) {
+function Course({ courseInfo, notification }: propTypes) {
   const [assessments, setAssessments] = useState(courseInfo.assessments);
   const [course, setCourse] = useState({
     ...courseInfo,

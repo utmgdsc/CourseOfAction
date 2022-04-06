@@ -16,6 +16,7 @@ import Dashboard from "./modules/DashBoard";
 import axios from "axios";
 import { apiURL } from "./utils/constant";
 import { setCourses } from "./store/courses";
+import user, { setNotification } from "./store/user";
 import CustomSpinner from "./components/CustomSpinner";
 import Upcoming from "./modules/Upcoming";
 
@@ -23,6 +24,7 @@ function App() {
   const courses = useSelector(
     (store: RootState) => store.courses.currentCourses
   );
+  const user = useSelector((store: RootState) => store.user);
   const themeMode = useSelector((store: RootState) => store.theme.darkMode);
   const dispatch = useDispatch();
   const [cookies, setCookies] = useCookies(["darkMode"]);
@@ -36,12 +38,13 @@ function App() {
     setLoading(true);
     axios({
       method: "GET",
-      url: `${apiURL}/get-courses`,
+      url: `${apiURL}/application-start`,
     })
       .then((res) => {
-        setLoading(false);
         // update redux state
-        dispatch(setCourses(res.data));
+        dispatch(setCourses(res.data.courses));
+        dispatch(setNotification({ notification: res.data.notification }));
+        setLoading(false);
       })
       .catch((err) => {
         setLoading(false);
@@ -80,7 +83,12 @@ function App() {
                         ) => (
                           <Route
                             path={e.code.toLowerCase()}
-                            element={<Course courseInfo={e} />}
+                            element={
+                              <Course
+                                courseInfo={e}
+                                notification={user.notification}
+                              />
+                            }
                           />
                         )
                       )}

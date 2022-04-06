@@ -88,6 +88,40 @@ def get_courses():
     user = get_user(request.headers.get("Utorid"))
     return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
 
+@app.route('/coa/api/application-start', methods=["GET"])
+def application_start():
+    """
+    Function to retrieve all courses for the student
+    """
+    user = get_user(request.headers.get("Utorid"))
+    try:
+        userInfo = db.child('users').child(user).get().val()
+        # Removing things we don't need
+        userInfo.pop("email")
+        userInfo.pop("name")
+        return make_response(jsonify(userInfo), 200)
+    except:
+        return make_response(jsonify(message='Server error. Please load again'), 500)
+
+@app.route('/coa/api/update-user-notification', methods=["POST"])
+def update_user_notification():
+    """
+    Function to retrieve all courses for the student
+    """
+    user = get_user(request.headers.get("Utorid"))
+
+    print(request.json, request.json.get('notification', None))
+
+    notification = request.json.get('notification', None)
+    if not (request.json) or not (notification == 0 or notification == 1):
+        return make_response(jsonify(message='Error missing required course information'), 400)
+    try:
+        userInfo = db.child('users').child(user).child("notification").set(request.json["notification"])
+        return make_response(jsonify(userInfo), 200)
+    except:
+        return make_response(jsonify(message='Server error. Please load again'), 500)
+
+
 @app.route('/coa/api/add-course', methods=["POST"])
 def add_course():
     """

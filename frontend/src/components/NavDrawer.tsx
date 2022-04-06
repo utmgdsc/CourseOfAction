@@ -10,13 +10,16 @@ import {
   Typography,
   Button,
   useTheme,
-  Stack,
   Switch,
-  Tooltip,
 } from "@mui/material";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/index";
 import { useNavigate } from "react-router-dom";
+import { setNotification } from "../store/user";
+import axios from "axios";
+import { apiURL } from "../utils/constant";
+import CustomSpinner from "./CustomSpinner";
+import { IOSSwitch } from "./IOSSwitch";
 interface Props {
   isOpen: boolean;
   window?: () => Window;
@@ -25,8 +28,27 @@ interface Props {
 
 function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
   const courses = useSelector((state: RootState) => state.courses);
+  const user = useSelector((state: RootState) => state.user);
   const navigation = useNavigate();
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const [nLoading, setNLoading] = useState(false);
+
+  const updateNotification = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNLoading(true);
+    const data = {
+      notification: event.target.checked === true ? 1 : 0,
+    };
+    axios
+      .post(`${apiURL}/update-user-notification`, data)
+      .then(() => {
+        setNLoading(false);
+        dispatch(setNotification(data));
+      })
+      .catch(() => {
+        setNLoading(false);
+      });
+  };
   const drawerInfo = (
     <Box>
       <Toolbar />
@@ -81,12 +103,24 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
           alignContent="flex-end"
           key="addCourse"
         >
-          <Tooltip title="In Beta this doesn't work" placement="top">
-            <Box textAlign="center" sx={{ borderTop: 0.5 }}>
-              Notification: ON
-              <Switch /> OFF
+          {nLoading ? (
+            <CustomSpinner />
+          ) : (
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ borderTop: 0.5, marginY: 0.5, paddingTop: 0.5 }}
+            >
+              Notification: OFF
+              <IOSSwitch
+                checked={user.notification === 1}
+                onChange={updateNotification}
+                sx={{ marginX: 1 }}
+              />{" "}
+              ON
             </Box>
-          </Tooltip>
+          )}
           <Button
             variant="contained"
             color="primary"

@@ -15,6 +15,7 @@ export interface CourseInterface {
   offering: string;
   currMark: number; // calculated
   assessments: Assessment[];
+  notification: number;
 }
 
 interface Courses {
