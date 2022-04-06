@@ -174,6 +174,7 @@ function Dashboard({ courses }: propTypes) {
             sx={{
               backgroundColor: "navBackgorund.secondary",
               borderRadius: "18px",
+              marginY: 5,
             }}
             p={3}
           >
