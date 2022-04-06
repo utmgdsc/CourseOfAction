@@ -28,6 +28,7 @@ import {
   updateCourse,
   deleteCourse as deleteCourseRedux,
 } from "../store/courses";
+import { IOSSwitch } from "../components/IOSSwitch";
 
 interface propTypes {
   courseInfo: CourseInterface;
@@ -112,7 +113,8 @@ function Course({ courseInfo, notification }: propTypes) {
   const dispatch = useDispatch();
   const updatedCourseInfo =
     course.expectedMark !== courseInfo.expectedMark ||
-    course.familiarity !== courseInfo.familiarity;
+    course.familiarity !== courseInfo.familiarity ||
+    course.notification !== courseInfo.notification;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -206,6 +208,9 @@ function Course({ courseInfo, notification }: propTypes) {
       case "familiarity":
         newState[name] = value;
         break;
+      case "notification":
+        newState[name] = e.target.checked === true ? 1 : 0;
+        break;
       default:
         console.log("Name does not exist.");
     }
@@ -217,6 +222,7 @@ function Course({ courseInfo, notification }: propTypes) {
       expectedMark: course.expectedMark,
       familiarity: course.familiarity,
       code: courseInfo.code,
+      notification: course.notification,
     };
     axios
       .patch(`${apiURL}/update-course`, data)
@@ -384,6 +390,40 @@ function Course({ courseInfo, notification }: propTypes) {
               onChange={handleChange}
               sx={{ marginLeft: "10px" }}
             />
+          </Grid>
+          <Grid container item xs={12} direction="column">
+            <Box
+              display="flex"
+              alignItems="center"
+              sx={{ marginY: 0.5, paddingTop: 0.5 }}
+            >
+              {notification === 1 ? (
+                <Box>
+                  {courseInfo.code}'s Notification: OFF{" "}
+                  <IOSSwitch
+                    name="notification"
+                    checked={course.notification === 1}
+                    onChange={handleChange}
+                    sx={{ marginX: 1 }}
+                  />{" "}
+                  ON{" "}
+                </Box>
+              ) : (
+                <MUIToolTip title="Application notification is off so you can't change this course's notification option">
+                  <Box>
+                    {courseInfo.code}'s Notification: OFF{" "}
+                    <IOSSwitch
+                      name="notification"
+                      checked={course.notification === 1}
+                      onChange={handleChange}
+                      disabled={true}
+                      sx={{ marginX: 1 }}
+                    />{" "}
+                    ON{" "}
+                  </Box>
+                </MUIToolTip>
+              )}
+            </Box>
           </Grid>
         </Grid>
 

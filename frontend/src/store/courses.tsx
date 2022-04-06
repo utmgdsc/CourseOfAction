@@ -50,7 +50,7 @@ const coursesSlice = createSlice({
       state.currentCourses[courseIndex].currMark = currMark;
     },
     updateCourse(state, { payload }) {
-      const { code, familiarity, expectedMark } = payload;
+      const { code, familiarity, expectedMark, notification } = payload;
       const courseIndex = state.currentCourses.findIndex(
         (course) => course.code === code
       );
@@ -61,6 +61,7 @@ const coursesSlice = createSlice({
       }
       state.currentCourses[courseIndex].expectedMark = expectedMark;
       state.currentCourses[courseIndex].familiarity = familiarity;
+      state.currentCourses[courseIndex].notification = notification;
     },
     deleteCourse(state, { payload }) {
       const { code } = payload;

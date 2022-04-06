@@ -10,7 +10,6 @@ import {
   Typography,
   Button,
   useTheme,
-  Switch,
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../store/index";
