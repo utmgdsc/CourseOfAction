@@ -105,7 +105,7 @@ function Upcoming() {
   });
 
   return (
-    <Container>
+    <Container sx={{ marginBottom: 5 }}>
       <Stack mb={4}>
         {legendColor.length !== 0
           ? legendColor.map((c) => (
