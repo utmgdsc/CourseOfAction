@@ -32,13 +32,11 @@ interface lstType {
 
 function Assessments({ tableData, setTableData, save, course }: lstType) {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const [addAsssessmentInfo, setAddAsssessmentInfo] = useState({
+  const [addAsssessmentInfo, setAddAsssessmentInfo] = useState<Assessment>({
     name: "",
-    customReminder: "", // Need to be date, error in database
-    deadline: "", // Need to be date, error in database
-    isCompleted: false, // Need to be boolean, error in database
-    mark: -1,
     reminder: "", // Need to be date, error in database
+    deadline: "", // Need to be date, error in database
+    mark: -1,
     weight: 0,
   });
   const [addAssessmentErrors, setAddAssessmentErrors] = useState({
@@ -283,7 +281,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
               onChange={(e) => {
                 setAddAsssessmentInfo((addAssessment) => ({
                   ...addAssessment,
-                  deadline: e.target.value,
+                  deadline: moment(e.target.value).toString(),
                 }));
               }}
             />
@@ -298,7 +296,7 @@ function Assessments({ tableData, setTableData, save, course }: lstType) {
               onChange={(e) => {
                 setAddAsssessmentInfo((addAssessment) => ({
                   ...addAssessment,
-                  customReminder: e.target.value,
+                  reminder: moment(e.target.value).toString(),
                 }));
               }}
             />

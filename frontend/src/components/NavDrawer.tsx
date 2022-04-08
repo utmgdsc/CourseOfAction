@@ -89,7 +89,6 @@ function NavDrawer({ isOpen, handleDrawerToggle, window }: Props) {
         </List>
         <Box
           sx={{
-            boxShadow: 20,
             background: "rgba(navBackground.main, 0.8)",
             position: "fixed",
             bottom: 0,
