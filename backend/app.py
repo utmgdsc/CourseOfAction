@@ -80,14 +80,6 @@ def send_app(path):
     else:
         return send_from_directory(app.static_folder, 'index.html')
 
-@app.route('/coa/api/get-courses', methods=["GET", "POST"])
-def get_courses():
-    """
-    Function to retrieve all courses for the student
-    """
-    user = get_user(request.headers.get("Utorid"))
-    return make_response(jsonify(db.child('users').child(user).child("courses").get().val()), 200)
-
 @app.route('/coa/api/application-start', methods=["GET"])
 def application_start():
     """
@@ -96,7 +88,7 @@ def application_start():
     user = get_user(request.headers.get("Utorid"))
     try:
         userInfo = db.child('users').child(user).get().val()
-        # Removing things we don't need
+        # Removing things we only need for seniding reminders
         userInfo.pop("email")
         userInfo.pop("name")
         return make_response(jsonify(userInfo), 200)
@@ -109,12 +101,9 @@ def update_user_notification():
     Function to retrieve all courses for the student
     """
     user = get_user(request.headers.get("Utorid"))
-
-    print(request.json, request.json.get('notification', None))
-
     notification = request.json.get('notification', None)
     if not (request.json) or not (notification == 0 or notification == 1):
-        return make_response(jsonify(message='Error missing required course information'), 400)
+        return bad_request('Error missing required course information')
     try:
         userInfo = db.child('users').child(user).child("notification").set(request.json["notification"])
         return make_response(jsonify(userInfo), 200)
@@ -129,7 +118,7 @@ def add_course():
     """
     user = get_user(request.headers.get("Utorid"))
     if not (request.json) or not(request.json.get('code', None)):
-        return make_response(jsonify(message='Error missing required course information'), 400)
+        return bad_request('Error missing required course information')
 
     #make sure the course code is unique
     existing_course = db.child('users').child(user).child("courses").order_by_child("code").equal_to(request.json['code']).get().val()
@@ -153,7 +142,7 @@ def delete_course():
     user = get_user(request.headers.get("Utorid"))
     # checking request has everything needed
     if not(request.json.get('code', None)):
-        return make_response(jsonify(message='Error missing required course information'), 400)
+        return bad_request('Error missing required course information')
     try:
         courses = db.child('users').child(user).child("courses").get().val()
         if request.json['code'] in courses:
@@ -172,7 +161,7 @@ def update_assessment():
     user = get_user(request.headers.get("Utorid"))
     # checking request has everything needed
     if not(request.json.get('code', None)) or not (request.json.get('assessments', None)) or (request.json.get('currMark', None) == None):
-        return make_response(jsonify(message='Error missing required course information'), 400)
+        return bad_request('Error missing required course information')
     
     req_code = request.json['code']
     req_assessments = request.json['assessments']
@@ -198,8 +187,8 @@ def update_course():
     user = get_user(request.headers.get("Utorid"))
     # checking request has everything needed
     if not request.json.get('expectedMark', None) or not request.json.get('familiarity', None) or not request.json.get('code', None):
-        return make_response(jsonify(message='Error missing required course information'), 400)
-    
+        return bad_request('Error missing required course information')
+        
     req_code = request.json['code']
     req_expectedMark = request.json['expectedMark']
     req_familiarity = request.json['familiarity']
