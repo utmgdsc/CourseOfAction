@@ -73,7 +73,7 @@ function AddCourse() {
         let v = value;
         if (value > 100) v = 100;
         if (value < 0) v = 0;
-        newState[name] = Number(v);
+        newState[name] = v;
         setErrors({ ...errors, [name]: validateExpectedMark(v) });
         break;
       case "familiarity":
