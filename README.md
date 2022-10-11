@@ -91,9 +91,16 @@ Clone the project onto your local machine.
 git clone https://github.com/milindvishnoi/CourseOfAction
 ```
 
-Install all the python packages and start backend server. Go into the backend folder and install all pip packages:
+Install all the python packages and start backend server in development mode. Go into the backend folder and install all pip packages:
 
 ```bash=2
+cd backend
+pip install -r requirements.txt
+FLASK_APP=app FLASK_ENV=development flask run -p 8989
+```
+
+For backend deployment
+```bash=3
 cd backend
 pip install -r requirements.txt
 flask run -p 8989
@@ -101,7 +108,7 @@ flask run -p 8989
 
 To install all the frontend dependencies and run the react application:
 
-```bash=3
+```bash=4
 cd frontend
 npm install
 npm start
