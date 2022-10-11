@@ -8,6 +8,11 @@ This application can be accessed via any browser on mobile and PC for UofT stude
 
 You need to have a valid UofT account to use this application as we use SSO for authentication.
 
+## Systems Architecture Diagram: 
+
+![image](https://user-images.githubusercontent.com/55604395/194973730-f060e39e-801a-47a4-bb8a-154d80497832.png)
+
+
 ## API Documentation
 
 If testing on deployed website then:
