@@ -1,5 +1,11 @@
 # CourseOfAction
 
+
+
+https://user-images.githubusercontent.com/48028572/195462790-aca666e9-45c5-49bd-b219-a034390a41b8.mp4
+
+
+
 ## Purpose:
 
 This application can be accessed via any browser on mobile and PC for UofT students to easily track courses, assessments and grades throughout their semester.
