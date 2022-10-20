@@ -4,7 +4,9 @@
 
 https://user-images.githubusercontent.com/48028572/195462790-aca666e9-45c5-49bd-b219-a034390a41b8.mp4
 
+# link to the deployed website: 
 
+https://mcsapps.utm.utoronto.ca/coa/app/dashboard
 
 ## Purpose:
 
