@@ -10,31 +10,30 @@ import os
 
 app = Flask(__name__, static_folder="build") # for prod
 
-# Enable CORS only in development
-if app.debug:
-    from flask_cors import CORS
-    cors = CORS(app)
-
-# schedule process to send notifications 
-scheduler = APScheduler()
-scheduler.init_app(app)
-scheduler.start()
-
-
 # Connect to Firebase Realtime DB
 firebase = pyrebase.initialize_app(json.load(open('secrets.json')))
 # Authenticate Firebase tables
 db = firebase.database()
 
 
-@scheduler.task('cron', id='send_notif', hour='8')
-def send_notification():
-    """Schedule notifications to be sent out at 8 am for all users"""
-    users = db.child("users").get().val()
-    for _,info in users.items():
-        # Added logic to enable/disable notifications globally
-        if "courses" in info and info["courses"] and "notification" in info and info["notification"]:
-            reminder.send_email(info.get("name"), info.get("email", "courseofactoin@gmail.com"), info["courses"])
+# Enable CORS only in development
+if app.debug:
+    from flask_cors import CORS
+    cors = CORS(app)
+else:
+    # schedule process to send notifications 
+    scheduler = APScheduler()
+    scheduler.init_app(app)
+    scheduler.start()
+
+    @scheduler.task('cron', id='send_notif', hour='8')
+    def send_notification():
+        """Schedule notifications to be sent out at 8 am for all users"""
+        users = db.child("users").get().val()
+        for _,info in users.items():
+            # Added logic to enable/disable notifications globally
+            if "courses" in info and info["courses"] and "notification" in info and info["notification"]:
+                reminder.send_email(info.get("name"), info.get("email", "courseofactoin@gmail.com"), info["courses"])
 
 def get_user(utorid):
     """
