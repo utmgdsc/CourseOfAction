@@ -1,10 +1,10 @@
 # CourseOfAction
 
-
-
 https://user-images.githubusercontent.com/48028572/195462790-aca666e9-45c5-49bd-b219-a034390a41b8.mp4
 
-## Link to the deployed website: 
+## Link to the deployed website:
+
+Can create an account to access functionality of website :D
 
 https://mcsapps.utm.utoronto.ca/coa/app/dashboard
 
@@ -108,6 +108,7 @@ FLASK_APP=app FLASK_ENV=development flask run -p 8989
 ```
 
 For backend deployment
+
 ```bash=3
 cd backend
 pip install -r requirements.txt
